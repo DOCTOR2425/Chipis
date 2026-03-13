@@ -16,18 +16,29 @@ $time-color: #996699;
 }
 
 .Message {
-  max-width: 30%;
 
+  max-width: 55%;
+  width: auto;
+
+  .Message-bubble {
+
+    &:hover {
+      transform: scale(1.02);
+      opacity: 0.9;
+    }
+  }
+  
   &-user {
     align-self: flex-end;
 
-    .Message-bubble {
+   .Message-bubble {
+
       background: $my-message-bg;
       color: $my-message-text;
       border-radius: 18px 18px 4px 18px;
     }
 
-    .Message-time {
+    .Message-time { 
       text-align: right;
     }
   }

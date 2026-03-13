@@ -3,15 +3,14 @@ import { IMessage } from "./IMessage.interface";
 import { IUser } from "./IUser.interface";
 
 
-// Сначала создаем объекты чата и пользователей
-const chat: IChat = {
-  chatId: "1",
-  name: "Общий чат"
-};
-
-const user1: IUser = {
+export const currentUser: IUser = {
   userId: "1",
   name: "Анна"
+};
+  
+export const currentChat: IChat = {
+  chatId: "1",
+  name: "Чат с подругой"
 };
 
 const user2: IUser = {
@@ -25,31 +24,32 @@ const messages: IMessage[] = [
     messageId: "1",
     text: "Привет! Как дела?",
     date: "2024-01-15T14:30:00",
-    chat: chat,
+    chat: currentChat,
     sender: user2  // Мария пишет Анне
   },
   {
     messageId: "2",
     text: "Привет! Всё отлично, а у тебя?",
     date: "2024-01-15T14:31:00",
-    chat: chat,
-    sender: user1  // Анна отвечает
+    chat: currentChat,
+    sender: currentUser  // Анна отвечает
   },
   {
     messageId: "3",
     text: "Тоже хорошо! Чем занимаешься?",
     date: "2024-01-15T14:32:00",
-    chat: chat,
+    chat: currentChat,
     sender: user2  // Мария
   },
   {
     messageId: "4",
     text: "Гуляю в парке, погода шикарная ☀️",
     date: "2024-01-15T14:33:00",
-    chat: chat,
-    sender: user1  // Анна
+    chat: currentChat,
+    sender: currentUser  // Анна
   }
 ];
+
 
 // Или более короткая версия с встроенными объектами:
 const messagesSimple = [
@@ -65,7 +65,7 @@ const messagesSimple = [
     text: "Привет! Всё отлично, а у тебя?",
     date: "14:31",
     chat: { chatId: "1", name: "Общий чат" },
-    sender: { userId: "1", name: "Анна" }
+    sender: currentUser
   },
   {
     messageId: "3",
@@ -79,7 +79,7 @@ const messagesSimple = [
     text: "Гуляю в парке, погода шикарная ☀️",
     date: "14:33",
     chat: { chatId: "1", name: "Общий чат" },
-    sender: { userId: "1", name: "Анна" }
+    sender: currentUser
   }
 ];
 export default messagesSimple;
