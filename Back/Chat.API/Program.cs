@@ -1,3 +1,4 @@
+using Chipis.API.WebSockets;
 using Chipis.Application.Services;
 using Chipis.Core.Abstractions;
 using Chipis.DataAccess;
@@ -21,7 +22,6 @@ namespace Chipis.API
 
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IUsersRepository, UsersRepository>();
-            //builder.Services.AddScoped<ICha, UsersRepository>();
 
             builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
                 .AddNegotiate();
@@ -41,12 +41,24 @@ namespace Chipis.API
                 app.UseSwaggerUI();
             }
 
+            app.UseWebSockets();
+            var chatHandler = new ChatWebSocketHandler();
+            app.Map("/ws", chatHandler.HandleAsync);
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
 
             app.MapControllers();
+
+            app.UseCors(x =>
+            {
+                x.WithOrigins("https://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+            });
 
             app.Run();
         }
