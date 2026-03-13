@@ -1,4 +1,4 @@
-﻿using Chipis.Core.Abstractions;
+﻿using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 
 namespace Chipis.Application.Services
@@ -39,7 +39,7 @@ namespace Chipis.Application.Services
 
         public async Task<User> GetUserById(Guid userId)
         {
-            return await _usersRepository.GetUserById(userId);
+            return await _usersRepository.GetById(userId);
         }
     }
 }

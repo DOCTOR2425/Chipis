@@ -1,6 +1,6 @@
 ﻿using Chipis.Core.Models;
 
-namespace Chipis.Core.Abstractions
+namespace Chipis.Application.Abstractions
 {
     public interface IUsersRepository
     {
@@ -8,7 +8,7 @@ namespace Chipis.Core.Abstractions
         Task<Guid> Delete(Guid userId);
         Task<List<User>> GetAll();
         Task<Guid> Update(Guid userId, string name, string hasPassword);
-        Task<User> GetUserById(Guid userId);
+        Task<User> GetById(Guid userId);
         Task<List<User>> SearchUsersByName(string userName);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Chipis.API.DTOs;
-using Chipis.Core.Abstractions;
+using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 

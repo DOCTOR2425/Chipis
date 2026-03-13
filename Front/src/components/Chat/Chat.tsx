@@ -24,7 +24,7 @@ const [messagesList, setMessagesList] = useState<IMessage[]>([]);
         </header>
 
         <div className='Chat-body'>
-            {messagesList.map(msg => (
+            {messagesSimple.map(msg => (
               <Message {...msg} key={msg.messageId}></Message>
           )
           )}
