@@ -52,7 +52,7 @@ const [inputText, setInputText] = useState('');
         </header>
 
         <div className='Chat-body'>
-            {messagesList.map(msg => (
+            {messagesSimple.map(msg => (
               <Message {...msg} key={msg.messageId}></Message>
           )
           )}

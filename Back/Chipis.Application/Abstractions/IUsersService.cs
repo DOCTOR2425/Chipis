@@ -1,6 +1,6 @@
 ﻿using Chipis.Core.Models;
 
-namespace Chipis.Core.Abstractions
+namespace Chipis.Application.Abstractions
 {
     public interface IUsersService
     {

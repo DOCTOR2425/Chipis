@@ -9,7 +9,7 @@ class SocketManager {
     this.userId = userId;
 
     // URL C# бэкенда
-    const wsUrl = `ws://localhost:8000/ws?userId=${userId}`;
+    const wsUrl = `ws://localhost:7078/ws?`;//userId=${userId}`;
     
     this.ws = new WebSocket(wsUrl);
 
@@ -33,7 +33,7 @@ class SocketManager {
 
   sendMessage(message: IMessage) {
   if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-    
+
     console.error('Нет соединения');
     return false;
   }

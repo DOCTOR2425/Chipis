@@ -1,4 +1,4 @@
-﻿using Chipis.Core.Abstractions;
+﻿using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using Chipis.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -36,13 +36,13 @@ namespace Chipis.DataAccess.Repositories
                 HashPassword = user.HashPassword,
             };
 
-            await _context.AddAsync(userEntity);
+            await _context.UserEntity.AddAsync(userEntity);
             await _context.SaveChangesAsync();
 
             return userEntity.UserEntityId;
         }
 
-        public async Task<User> GetUserById(Guid userId)
+        public async Task<User> GetById(Guid userId)
         {
             UserEntity userEntity = await _context.UserEntity
                 .FindAsync(userId);

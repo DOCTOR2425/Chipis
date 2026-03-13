@@ -1,7 +1,6 @@
 ﻿using Chipis.API.DTOs;
-using Chipis.Core.Abstractions;
+using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chipis.API.Controllers
@@ -32,7 +31,6 @@ namespace Chipis.API.Controllers
             [FromBody] UserRequest request)
         {
             User user = new User(Guid.NewGuid(), request.Name, request.HashPassword);
-
 
             return Ok(await _usersService.CreateUser(user));
         }

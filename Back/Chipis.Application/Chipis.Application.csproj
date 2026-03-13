@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chat.Core\Chipis.Core.csproj" />
-    <ProjectReference Include="..\Chat.DataAccess\Chipis.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
