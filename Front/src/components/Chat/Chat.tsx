@@ -3,6 +3,7 @@ import './Chat.scss';
 import messagesSimple, { currentChat, currentUser } from '../../interfaces/TestMessage'
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../interfaces/IMessage.interface';
+import { wsManager } from '../../services/SocketManager';
 
 export default function Chat()
 {
@@ -10,10 +11,14 @@ const [messagesList, setMessagesList] = useState<IMessage[]>(messagesSimple);
 const [inputText, setInputText] = useState('');
 
   useEffect(() => {
-    fetch('https://localhost:7078/api/ВСТАВЬ-КОНТРОЛЛЕР') //TODO Вставить полный путь после создания контролера
+    wsManager.connect(currentUser.userId);
+
+    
+    /*fetch('https://localhost:7078/api/ВСТАВЬ-КОНТРОЛЛЕР') //TODO Вставить полный путь после создания контролера
       .then(response => response.json())
       .then(data => setMessagesList(data))
-      .catch(error => console.log('Ошибка при загрузке:', error));
+      .catch(error => console.log('Ошибка при загрузке:', error));*/
+
   }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -34,6 +39,7 @@ const [inputText, setInputText] = useState('');
     };
     console.log(newMessage)
     setMessagesList([...messagesList, newMessage]);
+    wsManager.sendMessage(newMessage);
     setInputText(''); 
   };
 
