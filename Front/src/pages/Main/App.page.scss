@@ -5,9 +5,11 @@
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
+$primary-gradient-start: pink;
+$primary-gradient-end: #ffddff;
 .App {
   height: 100vh;
   display: flex;
   justify-content: center;
-  background-color: #ffe6f0;
+  background: linear-gradient(135deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
 }

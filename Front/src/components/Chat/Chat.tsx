@@ -4,6 +4,8 @@ import messagesSimple, { currentChat, currentUser } from '../../interfaces/TestM
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../interfaces/IMessage.interface';
 import { wsManager } from '../../services/SocketManager';
+import { useNavigate } from 'react-router-dom';
+import avatarImage from '../../media/testImage/avatar1.jpg';
 
 export default function Chat()
 {
@@ -12,13 +14,6 @@ const [inputText, setInputText] = useState('');
 
   useEffect(() => {
     wsManager.connect(currentUser.userId);
-
-    
-    /*fetch('https://localhost:7078/api/ВСТАВЬ-КОНТРОЛЛЕР') //TODO Вставить полный путь после создания контролера
-      .then(response => response.json())
-      .then(data => setMessagesList(data))
-      .catch(error => console.log('Ошибка при загрузке:', error));*/
-
   }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -43,16 +38,34 @@ const [inputText, setInputText] = useState('');
     setInputText(''); 
   };
 
+  const navigate = useNavigate();
+
+  const handleHeaderClick = () => {
+    navigate('/auth');
+};
+
     return(
     <div className='Chat'>
-        <header className='Chat-header'>
-            <div></div>
-            <p>Aboba</p>
-            <div></div>
+            <header className='Chat-header'>
+            <div className='Chat-header-info' onClick={handleHeaderClick}>
+              <div className='Chat-avatar-wrapper'>
+                <img className='User-avatar' src={avatarImage} />
+                <div className='Chat-status online'></div>
+              </div>
+                <div className='Chat-title'>
+                    <span>Aboba</span>
+                    <span>был(а) только что</span>
+                </div>
+            </div>
+            
+            <div className='Chat-header-actions'>
+                <button>🔍</button>
+                <button>⋮</button>
+            </div>
         </header>
 
         <div className='Chat-body'>
-            {messagesSimple.map(msg => (
+            {messagesList.map(msg => (
               <Message {...msg} key={msg.messageId}></Message>
           )
           )}

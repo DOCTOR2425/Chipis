@@ -9,7 +9,7 @@ class SocketManager {
     this.userId = userId;
 
     // URL C# бэкенда
-    const wsUrl = `ws://localhost:7078/ws?`;//userId=${userId}`;
+    const wsUrl = `ws://localhost:5048/ws?userId=${userId}`;
     
     this.ws = new WebSocket(wsUrl);
 
