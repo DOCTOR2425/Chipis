@@ -31,45 +31,11 @@ namespace Chipis.API.Controllers
                 .ToList());
         }
 
-        [HttpPost("registerUser")]
-        public async Task<IActionResult> RegisterUser(
-            [FromBody] RegisterUserRequest request)
+        [Authorize]
+        [HttpGet("testAuth")]
+        public async Task<IActionResult> TestAuth()
         {
-            var (accessToken, refreshToken) = await _usersService
-                .RegisterUser(request.Nickname, request.Telephone, request.Password);
-
-            return Ok((accessToken, refreshToken));
-        }
-
-        //[HttpPost("loginUser")]
-        //public async Task<ActionResult<(string, string)>> Login(
-        //    [FromBody] LoginUserRequest request)
-        //{
-        //    var (accessToken, refreshToken) = await _usersService
-        //        .Login(request.Telephone, request.Password);
-
-        //    Console.WriteLine(accessToken);
-        //    Console.WriteLine(refreshToken);
-
-        //    return Ok((accessToken, refreshToken));
-        //}
-
-        [HttpPost("loginUser")]
-        public async Task<ActionResult<string>> Login(
-            [FromBody] LoginUserRequest request)
-        {
-            var (accessToken, refreshToken) = await _usersService
-                .Login(request.Telephone, request.Password);
-
-            HttpContext.Response.Cookies.Append(_options.RefreshToken, refreshToken, new CookieOptions()
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
-                Expires = DateTime.Now.AddDays(_options.CookieLifetimeDays)
-            });
-
-            return Ok(accessToken);
+            return Ok("work");
         }
     }
 }

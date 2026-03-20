@@ -21,5 +21,7 @@ namespace Chipis.API.Controllers
         {
             return Ok(await _chatsService.GetAllMessagesByChatId(chatId));
         }
+
+
     }
 }

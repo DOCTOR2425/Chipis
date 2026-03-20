@@ -2,7 +2,7 @@
 {
     public class CookieOptions
     {
-        public string RefreshToken { get; set; } = string.Empty;
+        public string RefreshTokenName { get; set; } = string.Empty;
         public int CookieLifetimeDays { get; set; }
     }
 }

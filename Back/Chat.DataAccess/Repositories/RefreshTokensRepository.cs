@@ -2,16 +2,22 @@
 using Chipis.Core.Models;
 using Chipis.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Chipis.DataAccess.Repositories
 {
     public class RefreshTokensRepository : IRefreshTokensRepository
     {
         private readonly ChipisDbContext _context;
+        private readonly IHashProvider _hashProvider;
 
-        public RefreshTokensRepository(ChipisDbContext context)
+        public RefreshTokensRepository(
+            ChipisDbContext context,
+            IHashProvider hashProvider)
         {
             _context = context;
+            _hashProvider = hashProvider;
         }
 
         public async Task<Guid> Create(RefreshToken refreshToken)
@@ -52,6 +58,25 @@ namespace Chipis.DataAccess.Repositories
             return tokenId;
         }
 
-        //public async Task<RefreshToken> GetByUser
+        public async Task<RefreshToken> GetByString(string token)
+        {
+            RefreshTokenEntity tokenEntity = await _context.RefreshTokenEntity
+                .Include(t => t.UserEntity)
+                .FirstOrDefaultAsync(t => t.TokenHash == Convert.ToHexString(
+                    SHA256.HashData(Encoding.UTF8.GetBytes(token))));
+
+            RefreshToken refreshToken = new RefreshToken(
+                tokenEntity.RefreshTokenEntityId,
+                tokenEntity.TokenHash,
+                tokenEntity.CreatedAt,
+                tokenEntity.ExpiresAt,
+                new User(
+                    tokenEntity.UserEntity.UserEntityId,
+                    tokenEntity.UserEntity.Nickname,
+                    tokenEntity.UserEntity.Telephone,
+                    tokenEntity.UserEntity.HashPassword));
+
+            return refreshToken;
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace Chipis.Application.Abstractions
         Task<Guid> Create(RefreshToken refreshToken);
         Task<Guid> Delete(Guid tokenId);
         Task<Guid> Revoke(Guid tokenId);
+        Task<RefreshToken> GetByString(string token);
     }
 }

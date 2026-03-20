@@ -5,7 +5,9 @@ using Chipis.DataAccess;
 using Chipis.DataAccess.Repositories;
 using Chipis.Infrastructure;
 using Chipis.Infrastructure.Options;
-using Microsoft.AspNetCore.Authentication.Negotiate;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Chipis.API
 {
@@ -28,25 +30,21 @@ namespace Chipis.API
 
             RegisterServices(builder);
 
-            builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-                .AddNegotiate();
-            //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(opt =>
-            //    {
-            //        opt.TokenValidationParameters = new()
-            //        {
-            //            ValidateIssuer = false,
-            //            ValidateAudience = false,
-            //            ValidateLifetime = true,
-            //            ValidateIssuerSigningKey = true,
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtProvider.JwtKey))
-            //        };
-            //    });
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(opt =>
+                {
+                    opt.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
 
-            builder.Services.AddAuthorization(options =>
-            {
-                options.FallbackPolicy = options.DefaultPolicy;
-            });
+            builder.Services.AddAuthorization();
 
             builder.Services.AddTransient<ChatWebSocketHandler>();
 
@@ -60,12 +58,20 @@ namespace Chipis.API
             }
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
 
             app.UseCors(x =>
             {
                 x.WithOrigins("http://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+
+                x.WithOrigins("https://localhost:7078")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -83,6 +89,7 @@ namespace Chipis.API
 
         private static void RegisterServices(WebApplicationBuilder builder)
         {
+            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IChatsService, ChatsService>();
             builder.Services.AddScoped<IMessagesService, MessagesService>();
             builder.Services.AddScoped<IUsersService, UsersService>();

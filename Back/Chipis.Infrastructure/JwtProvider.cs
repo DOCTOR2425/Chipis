@@ -4,18 +4,17 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Chipis.Infrastructure
 {
     public class JwtProvider : IJwtProvider
     {
-        private readonly IHashProvider _hashProvider;
         private readonly JwtOptions _options;
 
-        public JwtProvider(IHashProvider hashProvider, IOptions<JwtOptions> options)
+        public JwtProvider(IOptions<JwtOptions> options)
         {
-            _hashProvider = hashProvider;
             _options = options.Value;
         }
 
@@ -53,7 +52,7 @@ namespace Chipis.Infrastructure
             GenerateRefreshToken(Guid userId)
         {
             string token = _GenerateRefreshToken(userId);
-            var tokenHash = _hashProvider.Generate(token);
+            var tokenHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
             var expiresAt = DateTime.UtcNow.AddDays(_options.RefreshTokenLifetimeDays);
 
             return (token, tokenHash, expiresAt);

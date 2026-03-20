@@ -14,9 +14,5 @@ namespace Chipis.Application.Abstractions
             string nickname,
             string telephone,
             string hashPassword);
-        Task<(string accessToken, string refreshToken)> 
-            Login(string telephone, string password);
-        Task<(string accessToken, string refreshToken)> 
-            RegisterUser(string nickname, string telephone, string password);
     }
 }
