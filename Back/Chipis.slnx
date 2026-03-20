@@ -3,4 +3,5 @@
   <Project Path="Chat.Core/Chipis.Core.csproj" />
   <Project Path="Chat.DataAccess/Chipis.DataAccess.csproj" />
   <Project Path="Chipis.Application/Chipis.Application.csproj" Id="c29df198-2ceb-40bd-ace5-ff485aed6e26" />
+  <Project Path="Chipis.Infrastructure/Chipis.Infrastructure.csproj" Id="50ead47c-7d3f-4005-8dd5-7db2899aff5e" />
 </Solution>

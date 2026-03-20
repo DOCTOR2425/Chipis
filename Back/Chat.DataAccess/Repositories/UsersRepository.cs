@@ -21,7 +21,7 @@ namespace Chipis.DataAccess.Repositories
                 .ToListAsync();
 
             List<User> users = userEntities
-                .Select(u => new User(u.UserEntityId, u.Name, u.HashPassword))
+                .Select(u => new User(u.UserEntityId, u.Nickname, u.Telephone, u.HashPassword))
                 .ToList();
 
             return users;
@@ -32,7 +32,8 @@ namespace Chipis.DataAccess.Repositories
             UserEntity userEntity = new UserEntity
             {
                 UserEntityId = user.UserId,
-                Name = user.Name,
+                Nickname = user.Nickname,
+                Telephone = user.Telephone,
                 HashPassword = user.HashPassword,
             };
 
@@ -48,30 +49,58 @@ namespace Chipis.DataAccess.Repositories
                 .FindAsync(userId);
 
             return new User(
-                userId, 
-                userEntity.Name, 
+                userId,
+                userEntity.Nickname,
+                userEntity.Telephone,
                 userEntity.HashPassword);
         }
 
-        public async Task<List<User>> SearchUsersByName(string userName)
+        public async Task<bool> CheckByTelephone(string telephone)
+        {
+            UserEntity? userEntity = await _context.UserEntity
+                .FirstOrDefaultAsync(u => u.Telephone == telephone);
+
+            if(userEntity == null)
+                return false;
+            return true;
+        }
+
+        public async Task<User> GetByTelephone(string telephone)
+        {
+            UserEntity userEntity = await _context.UserEntity
+                .FirstOrDefaultAsync(u => u.Telephone == telephone);
+
+            return new User(
+                userEntity.UserEntityId, 
+                userEntity.Nickname, 
+                telephone, 
+                userEntity.HashPassword);
+        }
+
+        public async Task<List<User>> SearchUsersByNickname(string nickname)
         {
             List<UserEntity> usersEntity = await _context.UserEntity
-                .OrderBy(u => u.Name)
-                .Where(u => u.Name.Contains(userName))
+                .OrderBy(u => u.Nickname)
+                .Where(u => u.Nickname.Contains(nickname))
                 .ToListAsync();
 
             return usersEntity
-                .Select(u => new User(u.UserEntityId, u.Name, u.HashPassword))
+                .Select(u => new User(u.UserEntityId, u.Nickname, u.Telephone, u.HashPassword))
                 .ToList();
         }
 
-        public async Task<Guid> Update(Guid userId, string name, string hasPassword)
+        public async Task<Guid> Update(
+            Guid userId, 
+            string nickname, 
+            string telephone, 
+            string hashPassword)
         {
             await _context.UserEntity
                 .Where(u => u.UserEntityId == userId)
                 .ExecuteUpdateAsync(s => s
-                    .SetProperty(u => u.Name, name)
-                    .SetProperty(u => u.HashPassword, hasPassword));
+                    .SetProperty(u => u.Nickname, nickname)
+                    .SetProperty(u => u.Telephone, telephone)
+                    .SetProperty(u => u.HashPassword, hashPassword));
 
             return userId;
         }

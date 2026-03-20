@@ -64,7 +64,7 @@ namespace Chipis.API.WebSockets
                     date = savedMessage.Date,
                     chatId = savedMessage.Chat.ChatId,
                     senderId = savedMessage.Sender.UserId,
-                    senderName = savedMessage.Sender.Name
+                    senderName = savedMessage.Sender.Nickname
                 };
 
                 var outgoingJson = JsonSerializer.Serialize(outgoing);

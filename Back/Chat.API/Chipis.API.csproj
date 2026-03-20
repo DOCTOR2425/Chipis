@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Chat.DataAccess\Chipis.DataAccess.csproj" />
     <ProjectReference Include="..\Chipis.Application\Chipis.Application.csproj" />
+    <ProjectReference Include="..\Chipis.Infrastructure\Chipis.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

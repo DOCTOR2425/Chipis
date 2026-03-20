@@ -15,6 +15,7 @@ namespace Chipis.DataAccess
         public DbSet<ChatEntity> ChatEntity { get; set; }
         public DbSet<ChatMemberEntity> ChatMemberEntity { get; set; }
         public DbSet<MessageEntity> MessageEntity { get; set; }
+        public DbSet<RefreshTokenEntity> RefreshTokenEntity { get; set; }
         public DbSet<UserEntity> UserEntity { get; set; }
     }
 }

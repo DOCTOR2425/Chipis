@@ -41,7 +41,7 @@ namespace Chipis.DataAccess.Repositories
                     m.Text,
                     m.Date,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
-                    new User(m.Sender.UserEntityId, m.Sender.Name, m.Sender.HashPassword)))
+                    new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
         }
 

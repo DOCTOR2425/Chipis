@@ -8,7 +8,15 @@ namespace Chipis.Application.Abstractions
         Task<Guid> DeleteUser(Guid id);
         Task<List<User>> GetAllUsers();
         Task<User> GetUserById(Guid userId);
-        Task<List<User>> SearchUsersByName(string userName);
-        Task<Guid> UpdateUser(Guid userId, string userName, string hashPassword);
+        Task<List<User>> SearchUsersByNickname(string nickname);
+        Task<Guid> UpdateUser(
+            Guid userId,
+            string nickname,
+            string telephone,
+            string hashPassword);
+        Task<(string accessToken, string refreshToken)> 
+            Login(string telephone, string password);
+        Task<(string accessToken, string refreshToken)> 
+            RegisterUser(string nickname, string telephone, string password);
     }
 }
