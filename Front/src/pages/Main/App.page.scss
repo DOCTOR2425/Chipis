@@ -7,9 +7,11 @@
 
 $primary-gradient-start: pink;
 $primary-gradient-end: #ffddff;
+
 .App {
+  padding: 10px;
   height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   background: linear-gradient(135deg, $primary-gradient-start 0%, $primary-gradient-end 100%);
 }

@@ -1,0 +1,93 @@
+$online-color: #00b894; // Мятный для онлайн
+$bg-chat: #faf0f5; // Очень нежный розовый для чата
+$text-secondary: #636e72; // Серый
+$primary-color: #e84393; // Более мягкий розовый
+$primary-dark: #c2185b; // Темнее для hover
+
+.About-me{
+    background-color: $bg-chat;
+    border-radius: 24px;
+
+    width: 30vw;
+    height: fit-content;
+    padding: 10px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.Avatar-wrapper {
+      position: relative;
+      display: inline-block;
+      width: fit-content;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+    }
+
+    .User-avatar {
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      height: 48px;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+    
+    .User-status {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid white;
+      border-radius: 50%;
+      background: $online-color;
+      box-shadow: 0 2px 5px rgba($online-color, 0.4);
+
+      &.offline {
+        background: $text-secondary;
+      }
+    }
+
+
+    
+.Button {
+  background: linear-gradient(135deg, $primary-color, $primary-dark);
+  color: white;
+  border: none;
+  border-radius: 100%;
+  padding: 1px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 38px;
+  width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba($primary-color, 0.3);
+  
+  &:hover {
+    background: linear-gradient(135deg, $primary-dark, darken($primary-dark, 5%));
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba($primary-color, 0.4);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba($primary-color, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, $primary-color, $primary-dark);
+      transform: none;
+    }
+  }
+}
+
+    

@@ -6,9 +6,9 @@ import { IMessage } from '../../interfaces/IMessage.interface';
 import { wsManager } from '../../services/SocketManager';
 import { useNavigate } from 'react-router-dom';
 import avatarImage from '../../media/testImage/avatar1.jpg';
-
 export default function Chat()
 {
+
 const [messagesList, setMessagesList] = useState<IMessage[]>(messagesSimple);
 const [inputText, setInputText] = useState('');
 
