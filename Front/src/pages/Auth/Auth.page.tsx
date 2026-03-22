@@ -86,21 +86,20 @@ function Auth() {
     if (isLogin) {
       const response = await authService.loginUser(fullPhone, formData.password);
       console.log('Успешный вход:', response);
+      navigate('/');
     } else {
       console.log('Регистрация:', { ...formData, phone: fullPhone });
       // TODO: добавить метод регистрации в authService
       // await authService.registerUser(fullPhone, formData.password, formData.name);
-      alert('Регистрация успешна! Теперь вы можете войти.');
+      console.log('Регистрация успешна! Теперь вы можете войти.');
       setIsLogin(true);
+      navigate('/');
     }} 
     catch (err: any) {
-      setError(err.message || 'Произошла ошибка');
+      setError('Неверный телефон или пароль');
     }
     finally {
       setIsLoading(false);
-      if (isLogin && !error) {
-        navigate('/');
-      }
     }
   };
 

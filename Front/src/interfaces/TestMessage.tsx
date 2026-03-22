@@ -1,12 +1,13 @@
+import { currentUser } from "../services/Auth.service";
 import { IChat } from "./IChat.interface";
 import { IMessage } from "./IMessage.interface";
 import { IUser } from "./IUser.interface";
 
 
-export const currentUser: IUser = {
+/*export const currentUser: IUser = {
   userId: "1",
   name: "Анна"
-};
+};*/
   
 export const currentChat: IChat = {
   chatId: "1",

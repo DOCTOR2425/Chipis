@@ -1,15 +1,17 @@
 import "./AboutMe.scss";
 import avatarImage from '../../media/testImage/avatar1.jpg';
 import { IUser } from "../../interfaces/IUser.interface";
+import { useNavigate } from "react-router-dom";
+import authService, { currentUser } from "../../services/Auth.service";
 
-export const currentUser: IUser = {
-  userId: "1",
-  name: "Анна"
-};
 
 export default function AboutMe() {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
-    // Логика выхода
+    
+    authService.logout();
+    navigate("/auth");
     console.log('Выход из аккаунта');
   };
 

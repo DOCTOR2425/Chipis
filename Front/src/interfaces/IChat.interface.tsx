@@ -1,4 +1,4 @@
 export interface IChat {
-  chatId: string;
+  id: string;
   name: string;
 }

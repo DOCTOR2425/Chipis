@@ -11,6 +11,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
+    <title>Fropis</title>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />

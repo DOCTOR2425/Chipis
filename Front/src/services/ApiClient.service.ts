@@ -1,5 +1,3 @@
-// api-client.ts
-
 const BASE_URL = 'https://localhost:7078/api';
 
 interface IRequestOptions {
@@ -9,25 +7,33 @@ interface IRequestOptions {
 }
 
 interface IRefreshResponse {
-  token: string;
-  refreshToken: string;
+  accessToken: string; // сервер возвращает accessToken
 }
 
 class ApiClient {
   private baseUrl: string;
-  private token: string | null = null;
-  private refreshToken: string | null = null;
+  private accessToken: string | null = null;
   private isRefreshing = false;
   private refreshSubscribers: ((token: string) => void)[] = [];
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
+    this.loadTokenFromStorage();
   }
 
-  setToken(token: string | null, refreshToken?: string | null): void {
-    this.token = token;
-    if (refreshToken !== undefined) {
-      this.refreshToken = refreshToken;
+  private loadTokenFromStorage(): void {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      this.accessToken = token;
+    }
+  }
+
+  setToken(accessToken: string | null): void {
+    this.accessToken = accessToken;
+    if (accessToken) {
+      localStorage.setItem('accessToken', accessToken);
+    } else {
+      localStorage.removeItem('accessToken');
     }
   }
 
@@ -35,22 +41,66 @@ class ApiClient {
     const response = await fetch(`${this.baseUrl}/Auth/refresh`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken: this.refreshToken }),
+      credentials: 'include', // отправляем cookie с refresh-токеном
     });
 
     if (!response.ok) {
-      throw new Error('Refresh failed');
+      throw new Error('Не удалось обновить токен');
     }
 
     const data: IRefreshResponse = await response.json();
-    this.token = data.token;
-    this.refreshToken = data.refreshToken;
-    return data.token;
+    const newToken = data.accessToken; // поле accessToken, а не token
+    this.setToken(newToken);
+    return newToken;
   }
 
-  private onRefreshed(token: string): void {
-    this.refreshSubscribers.forEach(cb => cb(token));
+  private onRefreshed(newToken: string): void {
+    this.refreshSubscribers.forEach(cb => cb(newToken));
     this.refreshSubscribers = [];
+  }
+
+  private async handleUnauthorized(
+    endpoint: string,
+    fetchOptions: RequestInit,
+    originalHeaders: Record<string, string>
+  ): Promise<Response> {
+    if (this.isRefreshing) {
+      return new Promise((resolve) => {
+        this.refreshSubscribers.push(async (newToken) => {
+          const newHeaders = {
+            ...originalHeaders,
+            Authorization: `Bearer ${newToken}`,
+          };
+          const retryResponse = await fetch(`${this.baseUrl}${endpoint}`, {
+            ...fetchOptions,
+            headers: newHeaders,
+          });
+          resolve(retryResponse);
+        });
+      });
+    }
+
+    this.isRefreshing = true;
+
+    try {
+      const newToken = await this.refreshAccessToken();
+      this.onRefreshed(newToken);
+
+      const newHeaders = {
+        ...originalHeaders,
+        Authorization: `Bearer ${newToken}`,
+      };
+      const retryResponse = await fetch(`${this.baseUrl}${endpoint}`, {
+        ...fetchOptions,
+        headers: newHeaders,
+      });
+      return retryResponse;
+    } catch (error) {
+      this.setToken(null);
+      throw new Error('Сессия истекла');
+    } finally {
+      this.isRefreshing = false;
+    }
   }
 
   private async request<T>(endpoint: string, options: IRequestOptions = {}): Promise<T> {
@@ -61,14 +111,14 @@ class ApiClient {
       ...headers,
     };
 
-    if (this.token) {
-      requestHeaders['Authorization'] = `Bearer ${this.token}`;
+    if (this.accessToken) {
+      requestHeaders['Authorization'] = `Bearer ${this.accessToken}`;
     }
 
-    console.log('1');
     const fetchOptions: RequestInit = {
       method,
       headers: requestHeaders,
+      credentials: 'include',
     };
 
     if (body) {
@@ -76,38 +126,21 @@ class ApiClient {
     }
 
     let response: Response;
-    
-    response = await fetch(`${this.baseUrl}${endpoint}`, fetchOptions);
 
-    if (response.status === 401 && this.refreshToken) {
-      if (this.isRefreshing) {
-        return new Promise((resolve) => {
-          this.refreshSubscribers.push((newToken) => {
-            fetchOptions.headers = {
-              ...fetchOptions.headers,
-              Authorization: `Bearer ${newToken}`,
-            };
-            resolve(fetch(`${this.baseUrl}${endpoint}`, fetchOptions).then(res => res.json()));
-          });
-        });
+    try {
+      response = await fetch(`${this.baseUrl}${endpoint}`, fetchOptions);
+    } catch (networkError: any) {
+      if (networkError.message === 'Failed to fetch') {
+        throw new Error('Сервер недоступен. Проверьте подключение к интернету');
       }
+      throw networkError;
+    }
 
-      this.isRefreshing = true;
-
+    if (response.status === 401) {
       try {
-        const newToken = await this.refreshAccessToken();
-        this.onRefreshed(newToken);
-        fetchOptions.headers = {
-          ...fetchOptions.headers,
-          Authorization: `Bearer ${newToken}`,
-        };
-        response = await fetch(`${this.baseUrl}${endpoint}`, fetchOptions);
-      } 
-      catch (error) {
-        this.setToken(null, null);
-        throw new Error('Session expired');
-      } finally {
-        this.isRefreshing = false;
+        response = await this.handleUnauthorized(endpoint, fetchOptions, requestHeaders);
+      } catch (refreshError) {
+        throw refreshError;
       }
     }
 
