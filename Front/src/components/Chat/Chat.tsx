@@ -12,10 +12,10 @@ export default function Chat()
 const [messagesList, setMessagesList] = useState<IMessage[]>(messagesSimple);
 const [inputText, setInputText] = useState('');
 
-  useEffect(() => {
+  /*useEffect(() => {
     wsManager.connect(currentUser.userId);
-  }, []);
-
+  }, []);*/
+  
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();

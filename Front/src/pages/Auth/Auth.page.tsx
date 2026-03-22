@@ -72,35 +72,35 @@ function Auth() {
   };
 
   // Отправка формы
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    setError('');
+  setIsLoading(true);
+  setError('');
 
-    try {
-      // Формируем полный номер телефона с кодом страны
-      const fullPhone = `+375 ${formData.phone}`;
+  try {
+    const fullPhone = `${formData.phone}`;
 
-      if (isLogin) {
-        await authService.loginUser(fullPhone, formData.password);
-        console.log('Успешный вход');
-        navigate('/');
-      } else {
-        // Регистрация нового пользователя
-        console.log('Регистрация:', { ...formData, phone: fullPhone });
-        // TODO: добавить метод регистрации в authService
-        // await authService.registerUser(fullPhone, formData.password, formData.name);
-        alert('Регистрация успешна! Теперь вы можете войти.');
-        setIsLogin(true);
-      }
-    } catch (err: any) {
+    if (isLogin) {
+      const response = await authService.loginUser(fullPhone, formData.password);
+      console.log('Успешный вход:', response);
+    } else {
+      console.log('Регистрация:', { ...formData, phone: fullPhone });
+      // TODO: добавить метод регистрации в authService
+      // await authService.registerUser(fullPhone, formData.password, formData.name);
+      alert('Регистрация успешна! Теперь вы можете войти.');
+      setIsLogin(true);
+    }} 
+    catch (err: any) {
       setError(err.message || 'Произошла ошибка');
-    } finally {
+    }
+    finally {
       setIsLoading(false);
-      navigate('/');
+      if (isLogin && !error) {
+        navigate('/');
+      }
     }
   };
 
