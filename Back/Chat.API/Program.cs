@@ -9,6 +9,7 @@ using Chipis.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Serilog.Events;
 using System.Text;
 
 namespace Chipis.API
@@ -21,10 +22,16 @@ namespace Chipis.API
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                .WriteTo.Console(
+                    restrictedToMinimumLevel: LogEventLevel.Information
+                )
                 .WriteTo.File(
                     path: "Logs/log-.txt",
                     rollingInterval: RollingInterval.Day,
                     retainedFileCountLimit: 7,
+                    restrictedToMinimumLevel: LogEventLevel.Information,
                     shared: true,
                     encoding: System.Text.Encoding.UTF8
                 )
@@ -76,12 +83,7 @@ namespace Chipis.API
             }
 
             app.UseHttpsRedirection();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
-
+            app.UseRouting();
             app.UseCors(x =>
             {
                 x.WithOrigins("http://localhost:3000")
@@ -94,6 +96,14 @@ namespace Chipis.API
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
+
+            app.UseSerilogRequestLogging();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.MapControllers();
+
 
             app.UseWebSockets();
 

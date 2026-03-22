@@ -10,16 +10,13 @@ namespace Chipis.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IUsersService _usersService;
         private readonly IAuthService _authService;
         private readonly Infrastructure.Options.CookieOptions _options;
 
         public AuthController(
-            IUsersService usersService, 
             IAuthService authService,
             IOptions<Infrastructure.Options.CookieOptions> options)
         {
-            _usersService = usersService;
             _authService = authService;
             _options = options.Value;
         }
@@ -28,28 +25,52 @@ namespace Chipis.API.Controllers
         public async Task<IActionResult> RegisterUser(
             [FromBody] RegisterUserRequest request)
         {
-            var (accessToken, refreshToken) = await _authService
+            var (accessToken, refreshToken, user) = await _authService
                 .RegisterUser(request.Nickname, request.Telephone, request.Password);
 
-            return Ok((accessToken, refreshToken));
+            HttpContext.Response.Cookies.Append(_options.RefreshTokenName, refreshToken, new CookieOptions()
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTime.Now.AddDays(_options.CookieLifetimeDays)
+            });
+
+            return Ok(new
+            {
+                accessToken,
+                user = new
+                {
+                    id = user.UserId,
+                    name = user.Nickname
+                }
+            });
         }
 
         [HttpPost("loginUser")]
         public async Task<ActionResult<string>> Login(
             [FromBody] LoginUserRequest request)
         {
-            var (accessToken, refreshToken) = await _authService
+            var (accessToken, refreshToken, user) = await _authService
                 .Login(request.Telephone, request.Password);
 
             HttpContext.Response.Cookies.Append(_options.RefreshTokenName, refreshToken, new CookieOptions()
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.Now.AddDays(_options.CookieLifetimeDays)
             });
 
-            return Ok(accessToken);
+            return Ok(new
+            {
+                accessToken,
+                user = new
+                {
+                    id = user.UserId,
+                    name = user.Nickname
+                }
+            });
         }
 
         [HttpPost("refresh")]
@@ -67,13 +88,13 @@ namespace Chipis.API.Controllers
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Strict,
+                    SameSite = SameSiteMode.None,
                     Expires = DateTime.Now.AddDays(_options.CookieLifetimeDays)
                 });
 
             return Ok(new
             {
-                accessToken = result.accessToken
+                accessToken = result.accessToken,
             });
         }
     }

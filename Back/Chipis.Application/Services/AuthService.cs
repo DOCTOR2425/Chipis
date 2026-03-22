@@ -23,7 +23,7 @@ namespace Chipis.Application.Services
             _refreshTokensRepository = refreshTokensRepository;
         }
 
-        public async Task<(string accessToken, string refreshToken)>
+        public async Task<(string accessToken, string refreshToken, User user)>
             RegisterUser(string nickname, string telephone, string password)
         {
             if (await _usersRepository.CheckByTelephone(telephone))
@@ -49,10 +49,10 @@ namespace Chipis.Application.Services
                 user);
             await _refreshTokensRepository.Create(token);
 
-            return (accessToken, refreshToken);
+            return (accessToken, refreshToken, user);
         }
 
-        public async Task<(string accessToken, string refreshToken)>
+        public async Task<(string accessToken, string refreshToken, User user)>
             Login(string telephone, string password)
         {
             if (!await _usersRepository.CheckByTelephone(telephone))
@@ -73,7 +73,7 @@ namespace Chipis.Application.Services
                 user);
             await _refreshTokensRepository.Create(token);
 
-            return (accessToken, refreshToken);
+            return (accessToken, refreshToken, user);
         }
 
         public async Task<(string accessToken, string refreshToken)>
