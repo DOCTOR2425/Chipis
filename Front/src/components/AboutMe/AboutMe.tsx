@@ -17,12 +17,15 @@ export default function AboutMe() {
 
   return (
     <div className="About-me">
-        <span>
+        <span className="flex-line">
         <div className="Avatar-wrapper">
           <img className="User-avatar" src={avatarImage} alt={currentUser.name} />
           <div className="User-status" />
         </div>
-        <span className="about-me__name">{currentUser.name}</span>
+        <span className="About-me-data">
+        <span className="About-me__name">{currentUser.name}</span>
+        <span className="About-me__id">{currentUser.userId}</span>
+        </span>
       </span>
       <button className="Button" onClick={handleLogout}>
         <svg className="about-me__logout-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

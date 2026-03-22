@@ -86,7 +86,7 @@ function Auth() {
     if (isLogin) {
       const response = await authService.loginUser(fullPhone, formData.password);
       console.log('Успешный вход:', response);
-      navigate('/');
+      navigate('/chat');
     } else {
       console.log('Регистрация:', { ...formData, phone: fullPhone });
       // TODO: добавить метод регистрации в authService

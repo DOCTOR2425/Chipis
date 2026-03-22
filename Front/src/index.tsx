@@ -4,7 +4,8 @@ import './index.css';
 import App from './pages/Main/App.page';
 import Auth from './pages/Auth/Auth.page';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import Chat from './components/Chat/Chat';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,7 +15,10 @@ root.render(
     <title>Fropis</title>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/chat" element={<App />}>
+          <Route path=":chatId" element={<Chat />} /> {/* Конкретный чат */}
+        </Route>
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </BrowserRouter>

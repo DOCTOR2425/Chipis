@@ -7,7 +7,7 @@ interface ILoginResponse {
 }
 
 export var currentUser: IUser = {
-  id: "1",
+  userId: "1",
   name: "Анна"
 };
 
@@ -31,6 +31,8 @@ class AuthService {
         currentUser = response.user;
       }
 
+      localStorage.setItem('accessToken', response.accessToken);
+
       return response;
     } catch (error: any) {
       console.log("AuthService error:", error.message);
@@ -46,9 +48,7 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       await api.post('/Auth/logout', {});
-      // очищаем localStorage от данных пользователя
       localStorage.removeItem('accessToken');
-      // Если нужно, перенаправляем на страницу входа
     } catch (error) {
       console.error('Logout error:', error);
     }

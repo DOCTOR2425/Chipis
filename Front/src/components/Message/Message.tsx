@@ -1,14 +1,14 @@
 import React,{FC} from "react";
-import { IMessage } from "../../interfaces/IMessage.interface"
+import { IMessage } from "../../interfaces/Messages/IMessage.interface"
 import "./Message.scss"
 import { currentUser } from "../../services/Auth.service";
 
-const Message: FC<IMessage> = ({id, text, sender, date}) =>
+const Message: FC<IMessage> = ({messageId, text, senderId, sentAt}) =>
 {
     return(
-        <div key={id} className={`Message Message-${sender.id === currentUser.id ? 'user' : 'other'}`}>   
+        <div key={messageId} className={`Message Message-${senderId === currentUser.userId ? 'user' : 'other'}`}>   
             <div className="Message-bubble">{text}</div>
-            <div className="Message-time">{date.toString()}</div>
+            <div className="Message-time">  {new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
         </div>
     )
 };

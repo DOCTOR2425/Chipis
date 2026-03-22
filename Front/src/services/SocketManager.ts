@@ -1,4 +1,4 @@
-import { IMessage } from "../interfaces/IMessage.interface";
+import { IMessage } from "../interfaces/Messages/IMessage.interface";
 
 class SocketManager {
     

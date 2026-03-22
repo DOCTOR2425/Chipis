@@ -1,0 +1,106 @@
+// Цветовая схема для списка чатов
+$chat-item-bg: white;                 // фон элемента чата (было $other-message-bg)
+$chat-item-border: #ffb6c1;           // цвет границы (было $other-message-border)
+$chat-item-text: #333;                // цвет текста (было $other-message-text)
+$accent-color: hotpink;               // акцентный цвет (было $my-message-bg)
+$accent-text: white;                  // текст на акцентном фоне (было $my-message-text)
+$time-color: #996699;   
+$primary-dark: #c2185b; // Темнее для hover
+$scroll-track: #ffe4f0;  
+// Переменные для повторяющихся цветов
+$primary-color: #e84393; // Более мягкий розовый            // цвет времени
+
+$avatar-size: 48px;
+$border-radius: 16px;
+$transition: all 0.2s ease;
+
+.chat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: lighten($accent-color, 35%); // очень светлый фон
+  border-radius: $border-radius;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: $primary-color $scroll-track;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $scroll-track;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 3px;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: $primary-dark;
+    }
+  }
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: $chat-item-bg;
+  border-bottom: 1px solid rgba($chat-item-border, 0.5);
+  cursor: pointer;
+  transition: $transition;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: lighten($accent-color, 30%);
+    transform: translateX(2px);
+
+    .chat-name {
+      color: $accent-color;
+    }
+  }
+
+  &:active {
+    background-color: lighten($accent-color, 25%);
+    transform: scale(0.99);
+  }
+}
+
+.chat-avatar {
+  width: $avatar-size;
+  height: $avatar-size;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 16px;
+  border: 2px solid $accent-color;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: $transition;
+
+  .chat-item:hover & {
+    transform: scale(1.02);
+    border-color: darken($accent-color, 10%);
+  }
+}
+
+.chat-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: $chat-item-text;
+  letter-spacing: 0.3px;
+  transition: $transition;
+}
+
+.chat-time {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: $time-color;
+}

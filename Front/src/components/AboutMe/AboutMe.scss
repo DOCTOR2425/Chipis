@@ -1,5 +1,5 @@
 $online-color: #00b894; // Мятный для онлайн
-$bg-chat: #faf0f5; // Очень нежный розовый для чата
+$bg-chat: white; // Очень нежный розовый для чата
 $text-secondary: #636e72; // Серый
 $primary-color: #e84393; // Более мягкий розовый
 $primary-dark: #c2185b; // Темнее для hover
@@ -48,7 +48,17 @@ $primary-dark: #c2185b; // Темнее для hover
     }
 
 
-    
+.flex-line
+{
+  display: flex;
+  gap: 10px
+}
+.About-me-data
+{
+  display: flex;
+  flex-direction: column;
+}    
+
 .Button {
   background: linear-gradient(135deg, $primary-color, $primary-dark);
   color: white;

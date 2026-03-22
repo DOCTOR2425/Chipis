@@ -1,21 +1,41 @@
 import Message from '../Message/Message';
 import './Chat.scss';
-import messagesSimple, { currentChat } from '../../interfaces/TestMessage'
 import { useEffect, useState } from 'react';
-import { IMessage } from '../../interfaces/IMessage.interface';
+import { IMessage } from '../../interfaces/Messages/IMessage.interface';
 import { wsManager } from '../../services/SocketManager';
 import { useNavigate } from 'react-router-dom';
 import avatarImage from '../../media/testImage/avatar1.jpg';
 import authService, { currentUser } from '../../services/Auth.service';
-export default function Chat()
-{
+import { messagesSimple, firstChat as currentChat } from '../../interfaces/TestMessage';
+import { useParams } from 'react-router-dom';
+import { chatService } from '../../services/Chat.service';
 
-const [messagesList, setMessagesList] = useState<IMessage[]>(messagesSimple);
-const [inputText, setInputText] = useState('');
 
-  /*useEffect(() => {
-    wsManager.connect(currentUser.id);
-  }, []);*/
+export default function Chat() {
+  const { chatId  } = useParams();
+
+  const [messagesList, setMessagesList] = useState<IMessage[]>([]);
+  const [inputText, setInputText] = useState('');
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (!chatId) return;
+      
+      try {
+        //setLoading(true);
+        const data = await chatService.getMessagesFromChat(chatId);  
+        setMessagesList(data.messages);
+      } catch (err) {
+        console.error('Failed to load messages:', err);
+        setMessagesList(messagesSimple); // fallback на моки
+      } finally {
+        //setLoading(false);
+      }
+    };
+
+    fetchMessages();
+    wsManager.connect(currentUser.userId);
+  }, [chatId]); // Зависимость от chatId
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -27,23 +47,21 @@ const [inputText, setInputText] = useState('');
     if (inputText.trim() === '') return;
     
     const newMessage: IMessage = {
-      id: Date.now().toString(),
+      messageId: Date.now().toString(),
       text: inputText,
-      date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      sentAt: new Date().toISOString(),
       chat: currentChat,
       sender: currentUser
     };
-    console.log(newMessage)
+    console.log(newMessage);
     setMessagesList([...messagesList, newMessage]);
     wsManager.sendMessage(newMessage);
     setInputText(''); 
   };
 
-  const navigate = useNavigate();
-
   const handleHeaderClick = () => {
     authService.refreshTest();
-};
+  };
 
     return(
     <div className='Chat'>
@@ -67,7 +85,7 @@ const [inputText, setInputText] = useState('');
 
         <div className='Chat-body'>
             {messagesList.map(msg => (
-              <Message {...msg} key={msg.id}></Message>
+              <Message {...msg} key={msg.messageId}></Message>
           )
           )}
         </div>
