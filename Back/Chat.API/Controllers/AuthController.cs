@@ -97,5 +97,27 @@ namespace Chipis.API.Controllers
                 accessToken = result.accessToken,
             });
         }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            string? token = HttpContext.Request.Cookies[_options.RefreshTokenName];
+
+            await _authService.Logout(token);
+
+            Response.Cookies.Append(
+                _options.RefreshTokenName,
+                "",
+                new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = DateTime.UtcNow.AddDays(-1)
+                }
+            );
+
+            return Ok();
+        }
     }
 }

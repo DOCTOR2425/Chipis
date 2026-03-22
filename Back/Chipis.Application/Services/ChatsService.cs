@@ -24,5 +24,10 @@ namespace Chipis.Application.Services
         {
             return await _chatsRepository.GetMessagesByChatId(chatId, take, cursorId);
         }
+
+        public async Task<List<Chat>> GetChatsByUser(Guid userId)
+        {
+            return await _chatsRepository.GetChatsByUser(userId);
+        }
     }
 }

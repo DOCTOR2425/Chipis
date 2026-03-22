@@ -3,7 +3,7 @@ import { IUser } from "./IUser.interface";
 
 
 export interface IMessage {
-  messageId?: string;
+  id?: string;
   text: string;
   date: Date | string;
   chat: IChat; 

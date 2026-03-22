@@ -35,7 +35,7 @@ namespace Chipis.API.Controllers
         [HttpGet("testAuth")]
         public async Task<IActionResult> TestAuth()
         {
-            return Ok("work");
+            return Ok(new { work= "work" });
         }
 
         [HttpGet("testException")]

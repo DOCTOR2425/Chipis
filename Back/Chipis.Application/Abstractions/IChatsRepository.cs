@@ -12,5 +12,6 @@ namespace Chipis.Application.Abstractions
             Guid chatId,
             int take,
             Guid? cursorId);
+        Task<List<Chat>> GetChatsByUser(Guid userId);
     }
 }

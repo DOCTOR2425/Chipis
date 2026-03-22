@@ -10,5 +10,6 @@ namespace Chipis.Application.Abstractions
             RegisterUser(string nickname, string telephone, string password);
         Task<(string accessToken, string refreshToken)>
             RefreshTokens(string refreshToken);
+        Task Logout(string? refreshToken);
     }
 }

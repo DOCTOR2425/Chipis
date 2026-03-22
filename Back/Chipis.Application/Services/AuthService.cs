@@ -108,5 +108,13 @@ namespace Chipis.Application.Services
 
             return (newAccessToken, newRawToken);
         }
+
+        public async Task Logout(string? refreshToken)
+        {
+            RefreshToken token = await _refreshTokensRepository
+                .GetByString(refreshToken);
+
+            await _refreshTokensRepository.Delete(token.RefreshTokenId);
+        }
     }
 }

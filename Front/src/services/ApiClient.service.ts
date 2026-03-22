@@ -149,7 +149,11 @@ class ApiClient {
       throw new Error(`Ошибка ${response.status}: ${errorText}`);
     }
 
-    return response.json();
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+      return {} as T;
+    }
+    return JSON.parse(text);
   }
 
   get<T>(endpoint: string): Promise<T> {

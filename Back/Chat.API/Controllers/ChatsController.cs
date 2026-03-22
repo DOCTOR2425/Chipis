@@ -1,8 +1,10 @@
 ﻿using Chipis.API.DTOs;
 using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Chipis.API.Controllers
 {
@@ -47,8 +49,20 @@ namespace Chipis.API.Controllers
             {
                 messages = responses,
                 nextCursor = hasMore ? responses.Last().MessageResponseId.ToString() : null,
-                hasMore 
+                hasMore
             });
+        }
+
+        [Authorize]
+        [HttpGet("chast")]
+        public async Task<IActionResult> GetUserChats()
+        {
+            Guid userId = Guid.Parse(User
+                .FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            List<Chat> chats = await _chatsService.GetChatsByUser(userId);
+
+            return Ok(chats.Select(c => new ChatResponse(c.ChatId, c.Name)).ToList());
         }
     }
 }

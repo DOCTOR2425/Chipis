@@ -1,11 +1,12 @@
 import Message from '../Message/Message';
 import './Chat.scss';
-import messagesSimple, { currentChat, currentUser } from '../../interfaces/TestMessage'
+import messagesSimple, { currentChat } from '../../interfaces/TestMessage'
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../interfaces/IMessage.interface';
 import { wsManager } from '../../services/SocketManager';
 import { useNavigate } from 'react-router-dom';
 import avatarImage from '../../media/testImage/avatar1.jpg';
+import authService, { currentUser } from '../../services/Auth.service';
 export default function Chat()
 {
 
@@ -13,7 +14,7 @@ const [messagesList, setMessagesList] = useState<IMessage[]>(messagesSimple);
 const [inputText, setInputText] = useState('');
 
   /*useEffect(() => {
-    wsManager.connect(currentUser.userId);
+    wsManager.connect(currentUser.id);
   }, []);*/
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -26,7 +27,7 @@ const [inputText, setInputText] = useState('');
     if (inputText.trim() === '') return;
     
     const newMessage: IMessage = {
-      messageId: Date.now().toString(),
+      id: Date.now().toString(),
       text: inputText,
       date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       chat: currentChat,
@@ -41,7 +42,7 @@ const [inputText, setInputText] = useState('');
   const navigate = useNavigate();
 
   const handleHeaderClick = () => {
-    navigate('/auth');
+    authService.refreshTest();
 };
 
     return(
@@ -66,7 +67,7 @@ const [inputText, setInputText] = useState('');
 
         <div className='Chat-body'>
             {messagesList.map(msg => (
-              <Message {...msg} key={msg.messageId}></Message>
+              <Message {...msg} key={msg.id}></Message>
           )
           )}
         </div>

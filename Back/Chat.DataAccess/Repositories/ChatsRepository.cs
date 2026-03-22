@@ -95,5 +95,35 @@ namespace Chipis.DataAccess.Repositories
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
         }
+
+        public async Task<List<Chat>> GetChatsByUser(Guid userId)
+        {
+            List<ChatEntity> chatEntities = await _context.ChatMemberEntity
+                .Include(cm => cm.UserEntity)
+                .Include(cm => cm.ChatEntity)
+                .ThenInclude(c => c.Members)
+                .Where(cm => cm.UserEntity.UserEntityId == userId)
+                .Select(cm => cm.ChatEntity)
+                .ToListAsync();
+
+            return chatEntities.Select(ce => MapToDomain(ce, userId)).ToList();
+        }
+
+        private Chat MapToDomain(ChatEntity entity, Guid currentUserId)
+        {
+            string name;
+
+            if (entity.Members.Count == 2)
+            {
+                var other = entity.Members.First(m => m.UserEntity.UserEntityId != currentUserId);
+                name = other.UserEntity.Nickname;
+            }
+            else
+            {
+                name = entity.Name;
+            }
+
+            return new Chat(entity.ChatEntityId, name);
+        }
     }
 }

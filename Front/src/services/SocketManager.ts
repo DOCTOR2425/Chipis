@@ -3,13 +3,13 @@ import { IMessage } from "../interfaces/IMessage.interface";
 class SocketManager {
     
     private ws: WebSocket | null = null;
-    private userId: string = '';
+    private id: string = '';
 
-    connect(userId: string) {
-    this.userId = userId;
+    connect(id: string) {
+    this.id = id;
 
     // URL C# бэкенда
-    const wsUrl = `ws://localhost:5048/ws?userId=${userId}`;
+    const wsUrl = `ws://localhost:5048/ws?id=${id}`;
     
     this.ws = new WebSocket(wsUrl);
 
