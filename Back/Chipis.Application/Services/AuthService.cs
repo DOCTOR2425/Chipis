@@ -1,8 +1,6 @@
 ﻿using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using System.Security;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Chipis.Application.Services
 {

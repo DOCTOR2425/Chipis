@@ -61,7 +61,7 @@ namespace Chipis.API.WebSockets
                 {
                     messageId = savedMessage.MessageId,
                     text = savedMessage.Text,
-                    date = savedMessage.Date,
+                    date = savedMessage.SentAt,
                     chatId = savedMessage.Chat.ChatId,
                     senderId = savedMessage.Sender.UserId,
                     senderName = savedMessage.Sender.Nickname

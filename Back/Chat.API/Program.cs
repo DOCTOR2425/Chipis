@@ -1,4 +1,5 @@
-﻿using Chipis.API.WebSockets;
+﻿using Chipis.API.Filters;
+using Chipis.API.WebSockets;
 using Chipis.Application.Abstractions;
 using Chipis.Application.Services;
 using Chipis.DataAccess;
@@ -7,6 +8,7 @@ using Chipis.Infrastructure;
 using Chipis.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 
 namespace Chipis.API
@@ -17,12 +19,28 @@ namespace Chipis.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.File(
+                    path: "Logs/log-.txt",
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 7,
+                    shared: true,
+                    encoding: System.Text.Encoding.UTF8
+                )
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             builder.Services.Configure<JwtOptions>(
                 builder.Configuration.GetSection("Jwt"));
             builder.Services.Configure<Infrastructure.Options.CookieOptions>(
                 builder.Configuration.GetSection("Cookie"));
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ApiExceptionFilter>();
+            });
             builder.Services.AddOpenApi();
             builder.Services.AddSwaggerGen();
 

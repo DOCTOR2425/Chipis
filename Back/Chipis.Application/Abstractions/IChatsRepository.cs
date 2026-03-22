@@ -8,5 +8,9 @@ namespace Chipis.Application.Abstractions
         Task<Chat> GetByName(string name);
         Task<List<Chat>> GetChats();
         Task<List<Message>> GetAllMessagesByChatId(Guid chatId);
+        Task<List<Message>> GetMessagesByChatId(
+            Guid chatId,
+            int take,
+            Guid? cursorId);
     }
 }

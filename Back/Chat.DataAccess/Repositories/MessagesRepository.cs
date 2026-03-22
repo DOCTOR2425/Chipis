@@ -19,7 +19,7 @@ namespace Chipis.DataAccess.Repositories
             {
                 MessageEntityId = message.MessageId,
                 Text = message.Text,
-                Date = DateTime.Now,
+                SentAt = DateTime.Now,
                 ChatEntity = await _context.ChatEntity.FindAsync(message.Chat.ChatId),
                 Sender = await _context.UserEntity.FindAsync(message.Sender.UserId)
             };

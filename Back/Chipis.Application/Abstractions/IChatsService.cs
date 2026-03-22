@@ -5,5 +5,9 @@ namespace Chipis.Application.Abstractions
     public interface IChatsService
     {
         Task<List<Message>> GetAllMessagesByChatId(Guid chatId);
+        Task<List<Message>> GetMessagesByChatId(
+            Guid chatId,
+            int take,
+            Guid? cursorId);
     }
 }

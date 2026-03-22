@@ -4,7 +4,7 @@
     {
         public Guid MessageEntityId { get; set; }
         public string Text { get; set;  } = string.Empty;
-        public DateTime Date { get; set; }
+        public DateTime SentAt { get; set; }
 
         public ChatEntity ChatEntity { get; set; }
         public UserEntity Sender { get; set; }

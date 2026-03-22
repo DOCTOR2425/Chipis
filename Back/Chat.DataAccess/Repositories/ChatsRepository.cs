@@ -31,7 +31,7 @@ namespace Chipis.DataAccess.Repositories
             List<MessageEntity> messageEntities = await _context.MessageEntity
                 .Include(m => m.ChatEntity)
                 .Include(m => m.Sender)
-                .OrderBy(m => m.Date)
+                .OrderBy(m => m.SentAt)
                 .Where(m => m.ChatEntity.ChatEntityId == chatId)
                 .ToListAsync();
 
@@ -39,7 +39,7 @@ namespace Chipis.DataAccess.Repositories
                 .Select(m => new Message(
                     m.MessageEntityId,
                     m.Text,
-                    m.Date,
+                    m.SentAt,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
@@ -58,6 +58,42 @@ namespace Chipis.DataAccess.Repositories
                 .FirstOrDefaultAsync(c => c.Name == name);
 
             return new Chat(chatEntity.ChatEntityId, name);
+        }
+
+        public async Task<List<Message>> GetMessagesByChatId(
+            Guid chatId,
+            int take,
+            Guid? cursorId)
+        {
+            IQueryable<MessageEntity> query = _context.MessageEntity
+                .Include(m => m.ChatEntity)
+                .Include(m => m.Sender)
+                .Where(m => m.ChatEntity.ChatEntityId == chatId);
+
+            if (cursorId.HasValue)
+            {
+                MessageEntity? cursorMessage = await _context.MessageEntity
+                    .FirstOrDefaultAsync(m => m.MessageEntityId == cursorId);
+
+                if (cursorMessage != null)
+                {
+                    query = query.Where(m => m.SentAt < cursorMessage.SentAt);
+                }
+            }
+
+            List<MessageEntity> messageEntities = await query
+                .OrderByDescending(m => m.SentAt)
+                .Take(take)
+                .ToListAsync();
+
+            return messageEntities
+                .Select(m => new Message(
+                    m.MessageEntityId,
+                    m.Text,
+                    m.SentAt,
+                    new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
+                    new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
+                .ToList();
         }
     }
 }

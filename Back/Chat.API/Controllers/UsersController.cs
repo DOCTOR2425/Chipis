@@ -37,5 +37,12 @@ namespace Chipis.API.Controllers
         {
             return Ok("work");
         }
+
+        [HttpGet("testException")]
+        public async Task<IActionResult> TestException()
+        {
+            throw new InvalidOperationException("bruh");
+            return Ok("work");
+        }
     }
 }
