@@ -122,6 +122,7 @@ namespace Chipis.API
             builder.Services.AddScoped<IMessagesService, MessagesService>();
             builder.Services.AddScoped<IUsersService, UsersService>();
 
+            builder.Services.AddScoped<IChatMembersRepository, ChatMembersRepository>();
             builder.Services.AddScoped<IChatsRepository, ChatsRepository>();
             builder.Services.AddScoped<IMessagesRepository, MessagesRepository>();
             builder.Services.AddScoped<IRefreshTokensRepository, RefreshTokensRepository>();

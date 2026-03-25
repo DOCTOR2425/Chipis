@@ -1,5 +1,6 @@
 ﻿using Chipis.API.DTOs;
 using Chipis.Application.Abstractions;
+using Chipis.Application.Services;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -43,12 +44,12 @@ namespace Chipis.API.Controllers
                 .ToList();
 
             bool hasMore = responses.Count > take;
-            Guid? nextCursor = responses.LastOrDefault()?.MessageResponseId;
+            Guid? nextCursor = responses.LastOrDefault()?.MessageId;
 
             return Ok(new
             {
                 messages = responses,
-                nextCursor = hasMore ? responses.Last().MessageResponseId.ToString() : null,
+                nextCursor = hasMore ? responses.Last().MessageId.ToString() : null,
                 hasMore
             });
         }
@@ -63,6 +64,32 @@ namespace Chipis.API.Controllers
             List<Chat> chats = await _chatsService.GetChatsByUser(userId);
 
             return Ok(chats.Select(c => new ChatResponse(c.ChatId, c.Name)).ToList());
+        }
+
+        [Authorize]
+        [HttpPost("createChat/{userId2:guid}")]
+        public async Task<IActionResult> CreateChat(
+            [FromRoute] Guid userId2)
+        {
+            Guid userId = Guid.Parse(User
+                .FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var chat = await _chatsService.CreateChat(userId, userId2);
+
+            return Ok(chat);
+        }
+
+        [HttpPost("createChatTest/{userId:guid}/{userId2:guid}")]
+        public async Task<IActionResult> CreateChat(
+            [FromRoute] Guid userId,
+            [FromRoute] Guid userId2)
+        {
+            //Guid userId = Guid.Parse(User
+            //    .FindFirst(ClaimTypes.NameIdentifier).Value);
+
+            var chat = await _chatsService.CreateChat(userId, userId2);
+
+            return Ok(chat);
         }
     }
 }

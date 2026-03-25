@@ -12,12 +12,10 @@ namespace Chipis.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUsersService _usersService;
-        private readonly Infrastructure.Options.CookieOptions _options;
 
-        public UsersController(IUsersService usersService, IOptions<Infrastructure.Options.CookieOptions> options)
+        public UsersController(IUsersService usersService)
         {
             _usersService = usersService;
-            _options = options.Value;
         }
 
         [AllowAnonymous]
@@ -27,22 +25,19 @@ namespace Chipis.API.Controllers
             List<User> users = await _usersService.GetAllUsers();
 
             return Ok(users
-                .Select(u => new UserResponse(u.UserId, u.Nickname, u.HashPassword))
+                .Select(u => new UserResponse(u.UserId, u.Nickname))
                 .ToList());
         }
 
         [Authorize]
-        [HttpGet("testAuth")]
-        public async Task<IActionResult> TestAuth()
+        [HttpGet("searchUser/{userName}")]
+        public async Task<IActionResult> GetUser(string userName)
         {
-            return Ok(new { work= "work" });
-        }
+            List<User> users = await _usersService.SearchUsersByNickname(userName);
 
-        [HttpGet("testException")]
-        public async Task<IActionResult> TestException()
-        {
-            throw new InvalidOperationException("bruh");
-            return Ok("work");
+            return Ok(users
+                .Select(u => new UserResponse(u.UserId, u.Nickname))
+                .ToList());
         }
     }
 }

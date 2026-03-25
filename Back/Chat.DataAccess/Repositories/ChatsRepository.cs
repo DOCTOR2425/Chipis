@@ -102,6 +102,7 @@ namespace Chipis.DataAccess.Repositories
                 .Include(cm => cm.UserEntity)
                 .Include(cm => cm.ChatEntity)
                 .ThenInclude(c => c.Members)
+                .ThenInclude(c => c.UserEntity)
                 .Where(cm => cm.UserEntity.UserEntityId == userId)
                 .Select(cm => cm.ChatEntity)
                 .ToListAsync();
@@ -124,6 +125,20 @@ namespace Chipis.DataAccess.Repositories
             }
 
             return new Chat(entity.ChatEntityId, name);
+        }
+
+        public async Task<Guid> Create(Chat chat)
+        {
+            ChatEntity chatEntity = new ChatEntity()
+            {
+                ChatEntityId = chat.ChatId,
+                Name = chat.Name,
+            };
+
+            await _context.ChatEntity.AddAsync(chatEntity);
+            await _context.SaveChangesAsync();
+
+            return chatEntity.ChatEntityId;
         }
     }
 }

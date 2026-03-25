@@ -10,5 +10,6 @@ namespace Chipis.Application.Abstractions
             int take,
             Guid? cursorId);
         Task<List<Chat>> GetChatsByUser(Guid userId);
+        Task<Chat> CreateChat(Guid userId1, Guid userId2);
     }
 }

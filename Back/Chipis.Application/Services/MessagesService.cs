@@ -32,5 +32,10 @@ namespace Chipis.Application.Services
             await _messagesRepository.Create(message);
             return message;
         }
+
+        public async Task<Guid> DeleteMessage(Guid messageId)
+        {
+            return await _messagesRepository.Delete(messageId);
+        }
     }
 }

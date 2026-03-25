@@ -1,6 +1,7 @@
 ﻿using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using Chipis.DataAccess.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chipis.DataAccess.Repositories
 {
@@ -28,6 +29,15 @@ namespace Chipis.DataAccess.Repositories
             await _context.SaveChangesAsync();
 
             return messageEntity.MessageEntityId;
+        }
+
+        public async Task<Guid> Delete(Guid messageId)
+        {
+            await _context.MessageEntity
+                .Where(m => m.MessageEntityId == messageId)
+                .ExecuteDeleteAsync();
+
+            return messageId;
         }
     }
 }

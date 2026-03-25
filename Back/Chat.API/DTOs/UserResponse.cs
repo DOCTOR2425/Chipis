@@ -2,15 +2,13 @@
 {
     public class UserResponse
     {
-        public UserResponse(Guid userId, string name, string hashPassword)
+        public UserResponse(Guid userId, string name)
         {
             UserId = userId;
             Name = name;
-            HashPassword = hashPassword;
         }
 
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string HashPassword { get; set; } = string.Empty;
     }
 }

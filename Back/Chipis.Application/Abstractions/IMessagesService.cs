@@ -6,5 +6,6 @@ namespace Chipis.Application.Abstractions
     public interface IMessagesService
     {
         Task<Message> SaveNewMessage(CreateMessageCommand command);
+        Task<Guid> DeleteMessage(Guid messageId);
     }
 }
