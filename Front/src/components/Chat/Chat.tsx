@@ -3,105 +3,120 @@ import './Chat.scss';
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../interfaces/Messages/IMessage.interface';
 import { wsManager } from '../../services/SocketManager';
-import { useNavigate } from 'react-router-dom';
 import avatarImage from '../../media/testImage/avatar1.jpg';
-import authService, { currentUser } from '../../services/Auth.service';
-import { messagesSimple, firstChat as currentChat } from '../../interfaces/TestMessage';
 import { useParams } from 'react-router-dom';
 import { chatService } from '../../services/Chat.service';
-
+import { IUser } from '../../interfaces/IUser.interface';
+import authService from '../../services/Auth.service';
+import { notFoundedUser } from '../../contexts/UserContext';
 
 export default function Chat() {
-  const { chatId  } = useParams();
+  const { chatId } = useParams();
 
   const [messagesList, setMessagesList] = useState<IMessage[]>([]);
   const [inputText, setInputText] = useState('');
+  const [inputSearchText, setInputSearchText] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  const activeUserStr = localStorage.getItem('activeUser');
+  const activeUser: IUser = activeUserStr ? JSON.parse(activeUserStr) : notFoundedUser;
 
   useEffect(() => {
     const fetchMessages = async () => {
       if (!chatId) return;
-      
       try {
-        //setLoading(true);
-        const data = await chatService.getMessagesFromChat(chatId);  
+        const data = await chatService.getMessagesFromChat(chatId);
         setMessagesList(data.messages);
       } catch (err) {
         console.error('Failed to load messages:', err);
-        setMessagesList(messagesSimple); // fallback на моки
-      } finally {
-        //setLoading(false);
       }
     };
 
     fetchMessages();
-    wsManager.connect(currentUser.userId);
-  }, [chatId]); // Зависимость от chatId
-  
+    wsManager.connect(activeUser.userId);
+  }, [chatId, activeUser.userId]);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }};
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 
   const sendMessage = () => {
     if (inputText.trim() === '') return;
-    
+
     const newMessage: IMessage = {
       messageId: Date.now().toString(),
       text: inputText,
       sentAt: new Date().toISOString(),
-      chat: currentChat,
-      sender: currentUser
+      chatId: chatId || '',
+      sender: activeUser,
     };
-    console.log(newMessage);
     setMessagesList([...messagesList, newMessage]);
     wsManager.sendMessage(newMessage);
-    setInputText(''); 
+    setInputText('');
   };
 
   const handleHeaderClick = () => {
     authService.refreshTest();
   };
 
-    return(
-    <div className='Chat'>
-            <header className='Chat-header'>
-            <div className='Chat-header-info' onClick={handleHeaderClick}>
-              <div className='Chat-avatar-wrapper'>
-                <img className='User-avatar' src={avatarImage} />
-                <div className='Chat-status online'></div>
-              </div>
-                <div className='Chat-title'>
-                    <span>Aboba</span>
-                    <span>был(а) только что</span>
-                </div>
-            </div>
-            
-            <div className='Chat-header-actions'>
-                <button>🔍</button>
-                <button>⋮</button>
-            </div>
-        </header>
+  const searchingMessages = () => 
+  {
+    chatService.searchMessages(inputSearchText);
+  }
 
-        <div className='Chat-body'>
-            {messagesList.map(msg => (
-              <Message {...msg} key={msg.messageId}></Message>
-          )
-          )}
+  return (
+    <div className="chat">
+      <header className="chat__header">
+        <div className="chat__header-info" onClick={handleHeaderClick}>
+          <div className="chat__avatar-wrapper">
+            <img className="chat__avatar" src={avatarImage} alt="avatar" />
+            <div className="chat__status chat__status--online"></div>
+          </div>
+          <div className="chat__title">
+            <span>Aboba</span>
+            <span>был(а) только что</span>
+          </div>
         </div>
 
-        <div className='Chat-message-input'>
-            <textarea 
-            value={inputText} 
-            onChange={(e) => setInputText(e.target.value)}
-            maxLength={500}
-            onKeyDown={handleKeyDown}
-            className='Invisible Textarea' 
-            placeholder='Напишите что-нибудь...'></textarea>
-
-            <button className='Button' onClick={sendMessage}>Send</button>
+        <div className="chat__header-actions">
+          <button className="round-button" onClick={() => setIsSearching(true)}>🔍</button>
+          <button className="round-button">⋮</button>
         </div>
+      </header>
 
+      <div className={`chat__search-panel ${!isSearching ? 'hidden' : ''} `}>
+        <input
+          type="text"
+          value={inputSearchText}
+          onChange={(e) => setInputSearchText(e.target.value)}
+          placeholder="Что ищем?.."
+        />
+        <button className="__btn-close round-button" onClick={searchingMessages}>🔍</button>
+        <button className='__btn-close round-button' onClick={() => setIsSearching(false)}>X</button>
+      </div>
+
+      <div className="chat__body">
+        {messagesList.map((msg) => (
+          <Message {...msg} key={msg.messageId} />
+        ))}
+      </div>
+
+      <div className="chat__message-input">
+        <textarea
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          maxLength={500}
+          onKeyDown={handleKeyDown}
+          className="chat__textarea"
+          placeholder="Напишите что-нибудь..."
+        />
+        <button className="chat__send-button" onClick={sendMessage}>
+          Send
+        </button>
+      </div>
     </div>
-    )
+  );
 }

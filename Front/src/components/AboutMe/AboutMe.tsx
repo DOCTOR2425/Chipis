@@ -2,10 +2,14 @@ import "./AboutMe.scss";
 import avatarImage from '../../media/testImage/avatar1.jpg';
 import { IUser } from "../../interfaces/IUser.interface";
 import { useNavigate } from "react-router-dom";
-import authService, { currentUser } from "../../services/Auth.service";
+import authService from "../../services/Auth.service";
 
 
 export default function AboutMe() {
+
+  const activeUserStr = localStorage.getItem('activeUser');
+  const activeUser: IUser = activeUserStr ? JSON.parse(activeUserStr) : null;
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -19,12 +23,12 @@ export default function AboutMe() {
     <div className="About-me">
         <span className="flex-line">
         <div className="Avatar-wrapper">
-          <img className="User-avatar" src={avatarImage} alt={currentUser.name} />
+          <img className="User-avatar" src={avatarImage} alt={activeUser.name} />
           <div className="User-status" />
         </div>
         <span className="About-me-data">
-        <span className="About-me__name">{currentUser.name}</span>
-        <span className="About-me__id">{currentUser.userId}</span>
+        <span className="About-me__name">{activeUser.name}</span>
+        <span className="About-me__id">{activeUser.userId}</span>
         </span>
       </span>
       <button className="Button" onClick={handleLogout}>

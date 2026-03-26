@@ -3,7 +3,6 @@ import { IChat } from '../../interfaces/IChat.interface';
 import avatarImage from '../../media/testImage/avatar1.jpg';
 import './ChatList.scss';
 import { chatService } from '../../services/Chat.service';
-import { chatsSimple } from '../../interfaces/TestMessage';
 import { useNavigate } from 'react-router-dom';
 
 export default function ChatsList() {
@@ -11,6 +10,7 @@ export default function ChatsList() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -23,7 +23,6 @@ export default function ChatsList() {
       catch (err) 
       {
         console.error('Failed to load chats:', err);
-        setChats(chatsSimple);
         //setError('Не удалось загрузить чаты');
       } finally {
         setLoading(false);

@@ -6,11 +6,6 @@ interface ILoginResponse {
   accessToken?: any 
 }
 
-export var currentUser: IUser = {
-  userId: "1",
-  name: "Анна"
-};
-
 class AuthService {
   
   async loginUser(phone: string, password: string): Promise<ILoginResponse> {
@@ -28,7 +23,11 @@ class AuthService {
 
       if(response.user)
       {
-        currentUser = response.user;
+        const activeUser = {
+        userId: response.user.userId || response.user.id,
+        name: response.user.name};
+      
+        localStorage.setItem('activeUser', JSON.stringify(activeUser));
       }
 
       localStorage.setItem('accessToken', response.accessToken);

@@ -1,172 +1,49 @@
-// Переменные для повторяющихся цветов
-$primary-color: #e84393; // Более мягкий розовый
-$primary-dark: #c2185b; // Темнее для hover
-$primary-light: #f8bbd0; // Светлый для фона
-$bg-light: #fff5f9; // Нежный фон
-$bg-chat: #faf0f5; // Очень нежный розовый для чата
-$text-primary: #2d3436; // Темно-серый
-$text-secondary: #636e72; // Серый
-$text-muted: #b2bec3; // Светло-серый
-$border-color: #ffd1e4; // Розовая обводка
+// ===== ПЕРЕМЕННЫЕ =====
+$border-radius-lg: 24px;
+$border-radius-md: 12px;
+$border-radius-sm: 8px;
+
+// Цвета
+$primary: #e84393;
+$primary-dark: #c2185b;
+$primary-light: #f8bbd0;
+$bg-light: #fff5f9;
+$bg-chat: #faf0f5;
+$text-primary: #2d3436;
+$text-secondary: #636e72;
+$text-muted: #b2bec3;
+$border-color: #ffd1e4;
 $shadow-color: rgba(232, 67, 147, 0.1);
 $shadow-hover: rgba(232, 67, 147, 0.2);
 $scroll-track: #ffe4f0;
-$online-color: #00b894; // Мятный для онлайн
+$online-color: #00b894;
 
-.Chat {
-  width: 60%;
-  height: 90vh;
-  border: none; // Убираем обводку
-  display: flex;
-  flex-direction: column;
-  border-radius: 24px; // Больше скругление
-  box-shadow: 
-    0 10px 40px $shadow-color,
-    0 0 0 1px $border-color; // Тонкая обводка вместо бордера
-  background: $bg-chat;
-  overflow: hidden;
-  transition: box-shadow 0.3s ease;
+// Градиенты
+$gradient-light: linear-gradient(135deg, $bg-light, lighten($bg-light, 2%));
+$gradient-primary: linear-gradient(135deg, $primary, $primary-dark);
 
-  &:hover {
-    box-shadow: 
-      0 15px 50px $shadow-hover,
-      0 0 0 1px $primary-color;
-  }
+// ===== МИКСИНЫ =====
+@mixin invisible {
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
-.Chat-header {
-  background: linear-gradient(135deg, $bg-light, lighten($bg-light, 2%));
-  padding: 15px 20px;
-  color: $text-primary;
-  font-weight: 500;
-  font-size: 1.1em;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid $border-color;
-  backdrop-filter: blur(10px);
-
-  .Chat-header-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-
-    &:hover {
-      opacity: 0.9;
-    }
-
-    .Chat-avatar-wrapper {
-      position: relative;
-      display: inline-block;
-      width: fit-content;
-      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
-    }
-
-    .User-avatar {
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      height: 48px;
-      object-fit: cover;
-      border: 2px solid white;
-    }
-    
-    .Chat-status {
-      position: absolute;
-      bottom: 2px;
-      right: 2px;
-      width: 12px;
-      height: 12px;
-      border: 2px solid white;
-      border-radius: 50%;
-      background: $online-color;
-      box-shadow: 0 2px 5px rgba($online-color, 0.4);
-
-      &.offline {
-        background: $text-secondary;
-      }
-    }
-
-    .Chat-title {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-
-      span:first-child {
-        font-size: 1em;
-        color: $text-primary;
-        font-weight: 600;
-      }
-
-      span:last-child {
-        font-size: 0.7em;
-        color: $text-secondary;
-        font-weight: normal;
-        background: rgba($primary-light, 0.5);
-        padding: 2px 8px;
-        border-radius: 12px;
-      }
-    }
-  }
-
-  .Chat-header-actions {
-    display: flex;
-    gap: 8px;
-
-    button {
-      background: white;
-      border: none;
-      color: $text-secondary;
-      cursor: pointer;
-      font-size: 1.1em;
-      padding: 0;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-      &:hover {
-        background: $primary-color;
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba($primary-color, 0.3);
-      }
-
-      &:active {
-        transform: translateY(0);
-      }
-    }
-  }
-}
-
-.Chat-body {
-  padding: 20px;
-  max-height: 90%;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  overflow-y: auto;
-  gap: 12px;
+@mixin scrollbar($width: 6px, $track: $scroll-track, $thumb: $primary) {
   scrollbar-width: thin;
-  scrollbar-color: $primary-color $scroll-track;
+  scrollbar-color: $thumb $track;
 
   &::-webkit-scrollbar {
-    width: 6px;
+    width: $width;
   }
 
   &::-webkit-scrollbar-track {
-    background: $scroll-track;
+    background: $track;
     border-radius: 3px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: $primary-color;
+    background: $thumb;
     border-radius: 3px;
     transition: background 0.2s ease;
 
@@ -176,155 +53,256 @@ $online-color: #00b894; // Мятный для онлайн
   }
 }
 
-.Chat-footer {
-  background: linear-gradient(135deg, $bg-light, lighten($bg-light, 2%));
-  padding: 15px 20px;
-  border-top: 2px solid $border-color;
-  backdrop-filter: blur(10px);
-}
-
-.Chat-message-input {
-  width: 100%;
-  background: white;
-  border-radius: 24px;
-  padding: 8px 15px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  box-shadow: 
-    0 2px 10px rgba(0, 0, 0, 0.03),
-    0 0 0 1px $border-color;
-  transition: all 0.3s ease;
-}
-
-.Invisible {
-  background-color: transparent;
-  border: none;
-  outline: none;
-
-}
-
-.Textarea {
-  padding: 8px 5px;
-  font-size: 14px;
-  width: 100%;
-  height: 40px;
-  max-height: 80px;
-  white-space: pre-wrap; 
-  overflow-y: auto;
-  resize: none;
-  color: $text-primary;
-  font-family: inherit;
-
-  caret-color: $primary-color;
-  
-  &::placeholder {
-    color: $text-muted;
-    font-style: normal;
-    font-size: 0.95em;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  
+@mixin focus-ring($color: $primary) {
   &:focus {
-    &::placeholder {
-      opacity: 0.5;
-      transform: translateX(5px);
-    }
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($color, 0.2);
   }
 }
 
-.Button {
-  background: linear-gradient(135deg, $primary-color, $primary-dark);
-  color: white;
+@mixin button-reset {
+  background: transparent;
   border: none;
-  border-radius: 100%;
-  padding: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  height: 38px;
-  width: 38px;
+  padding: 0;
+}
+
+// ===== БАЗОВЫЕ КЛАССЫ =====
+.round-button {
+  @include button-reset;
+  background: white;
+  color: $text-secondary;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 3px 10px rgba($primary-color, 0.3);
-  
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
   &:hover {
-    background: linear-gradient(135deg, $primary-dark, darken($primary-dark, 5%));
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba($primary-color, 0.4);
+    background: $primary;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba($primary, 0.3);
   }
-  
+
   &:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 5px rgba($primary-color, 0.3);
+    transform: translateY(0);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     box-shadow: none;
-    
+
     &:hover {
-      background: linear-gradient(135deg, $primary-color, $primary-dark);
+      background: white;
+      color: $text-secondary;
       transform: none;
     }
   }
 }
 
-// Дополнительные кнопки для поля ввода
-.Attachment-button,
-.Emoji-button {
-  background: white;
-  border: none;
-  color: $text-secondary;
-  cursor: pointer;
-  padding: 0;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  
-  &:hover {
-    background: $primary-light;
-    color: $primary-color;
-    transform: scale(1.1);
-    box-shadow: 0 3px 12px rgba($primary-color, 0.2);
-  }
+.hidden
+{
+  transform: scaleY(0);
+  height: 0px;
+  transform-origin: top;
+  transition: transform 0.1s ease;
 }
 
-// Добавляем эффект градиента на фон чата
-.Chat-body {
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 20px;
-    pointer-events: none;
-    z-index: 1;
+// ===== КОМПОНЕНТ ЧАТА =====
+.chat {
+  width: 60%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 10px 40px $shadow-color, 0 0 0 1px $border-color;
+  background: $bg-chat;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 15px 50px $shadow-hover, 0 0 0 1px $primary;
   }
-  
-  &::after {
-    content: '';
+
+  &__header {
+    background: $gradient-light;
+    padding: 15px 20px;
+    color: $text-primary;
+    font-weight: 500;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid $border-color;
+    backdrop-filter: blur(10px);
+  }
+
+  &__header-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &__avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.1));
+  }
+
+  &__avatar {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    height: 48px;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+
+  &__status {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 20px;
-    pointer-events: none;
-    z-index: 1;
+    bottom: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background: $online-color;
+    box-shadow: 0 2px 5px rgba($online-color, 0.4);
+
+    &--offline {
+      background: $text-secondary;
+    }
+  }
+
+  &__title {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    span:first-child {
+      font-size: 1em;
+      color: $text-primary;
+      font-weight: 600;
+    }
+
+    span:last-child {
+      font-size: 0.7em;
+      color: $text-secondary;
+      font-weight: normal;
+      background: rgba($primary-light, 0.5);
+      padding: 2px 8px;
+      border-radius: $border-radius-md;
+    }
+  }
+
+  &__header-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__search-panel {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 $border-radius-md $border-radius-md;
+    background-color: white;
+    display: flex;
+    transition: transform 0.1s ease;
+
+    input {
+      width: 90%;
+      padding: 12px 20px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      @include invisible;
+
+
+      &::placeholder {
+        color: #999;
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+
+    &__btn-close
+    {
+      justify-self: end;
+    }
+  }
+
+  &__body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    @include scrollbar;
+    position: relative;
+  }
+
+  &__message-input {
+    background: white;
+    padding: 15px 20px;
+    border-top: 2px solid $border-color;
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+
+    textarea {
+      flex: 1;
+      @include invisible;
+      border-radius: $border-radius-lg;
+      padding: 10px 15px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      height: 40px;
+      max-height: 80px;
+      line-height: 1.4;
+      caret-color: $primary;
+
+      &::placeholder {
+        color: $text-muted;
+      }
+    }
+  }
+
+  &__send-button {
+    @extend .round-button;
+    background: $gradient-primary;
+    color: white;
+    box-shadow: 0 3px 10px rgba($primary, 0.3);
+
+    &:hover {
+      background: linear-gradient(135deg, $primary-dark, darken($primary-dark, 5%));
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba($primary, 0.4);
+      color: white;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      &:hover {
+        background: $gradient-primary;
+        transform: none;
+      }
+    }
   }
 }

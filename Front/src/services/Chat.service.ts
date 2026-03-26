@@ -14,10 +14,36 @@ class ChatService {
     }
   }
 
-  async getMessagesFromChat(chatId: string): Promise<IMessagesResponse> {
+  async getMessagesFromChat(
+    chatId: string, 
+    take: number = 50, 
+    cursorId?: string
+  ): Promise<IMessagesResponse> {
     try {
-      const response = await api.get<IMessagesResponse>(`/Chats/chats/${chatId}/messages`);
-      return response; 
+      const queryParams: string[] = [];
+      queryParams.push(`take=${take}`);
+      if (cursorId) {
+        queryParams.push(`cursorId=${cursorId}`);
+      }
+      
+      const url = `/Chats/chats/${chatId}/messages${queryParams.length ? `?${queryParams.join('&')}` : ''}`;
+      
+      const messages = await api.get<IMessagesResponse>(url);
+      return messages;
+    } catch (error) {
+      console.error('Request ChatsList error:', error);
+      throw error;
+    }
+  }
+
+
+  async searchMessages(text: string): Promise<IMessagesResponse> {
+    try {
+    const queryParams: string = text;
+      const url = `/Chats/chats/search${queryParams}`;
+      
+      const messages = await api.get<IMessagesResponse>(url);
+      return messages;
     } catch (error) {
       console.error('Request ChatsList error:', error);
       throw error;
