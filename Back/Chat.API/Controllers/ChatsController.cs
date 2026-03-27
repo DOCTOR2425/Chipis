@@ -1,6 +1,5 @@
 ﻿using Chipis.API.DTOs;
 using Chipis.Application.Abstractions;
-using Chipis.Application.Services;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -26,7 +25,7 @@ namespace Chipis.API.Controllers
             return Ok(await _chatsService.GetAllMessagesByChatId(chatId));
         }
 
-        [HttpGet("chats/{chatId:guid}/messages")]
+        [HttpGet("chats/{chatId:guid}/messages")]//TODO chat
         public async Task<ActionResult<List<MessageResponse>>> GetMessagesFromChat(
             [FromRoute] Guid chatId,
             [FromQuery] int take,
@@ -55,7 +54,7 @@ namespace Chipis.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("chast")]
+        [HttpGet("chast")]// TODO chast
         public async Task<IActionResult> GetUserChats()
         {
             Guid userId = Guid.Parse(User
@@ -74,9 +73,9 @@ namespace Chipis.API.Controllers
             Guid userId = Guid.Parse(User
                 .FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            var chat = await _chatsService.CreateChat(userId, userId2);
+            Chat chat = await _chatsService.CreateChat(userId, userId2);
 
-            return Ok(chat);
+            return Ok(new ChatResponse(chat.ChatId, chat.Name));
         }
 
         [HttpPost("createChatTest/{userId:guid}/{userId2:guid}")]
@@ -84,12 +83,27 @@ namespace Chipis.API.Controllers
             [FromRoute] Guid userId,
             [FromRoute] Guid userId2)
         {
-            //Guid userId = Guid.Parse(User
-            //    .FindFirst(ClaimTypes.NameIdentifier).Value);
-
             var chat = await _chatsService.CreateChat(userId, userId2);
 
             return Ok(chat);
+        }
+
+        [Authorize]
+        [HttpGet("chat/{chatId:guid}/search/{text}")]
+        public async Task<ActionResult<List<MessageResponse>>> SearchMessages(
+            [FromRoute] Guid chatId,
+            [FromRoute] string text,
+            [FromQuery] bool? isSinglWord)
+        {
+            List<Message> messages = await _chatsService.SearchMessages(chatId, text, isSinglWord);
+
+            return Ok(messages
+                .Select(m => new MessageResponse(
+                    m.MessageId,
+                    m.Sender.UserId,
+                    m.Text,
+                    m.SentAt))
+                .ToList());
         }
     }
 }

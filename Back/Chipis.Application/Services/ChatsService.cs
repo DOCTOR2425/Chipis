@@ -8,15 +8,18 @@ namespace Chipis.Application.Services
         private readonly IChatsRepository _chatsRepository;
         private readonly IUsersRepository _usersRepository;
         private readonly IChatMembersRepository _chatMembersRepository;
+        private readonly IMessagesRepository _messagesRepository;
 
         public ChatsService(
             IChatsRepository chatsRepository,
             IUsersRepository usersRepository,
-            IChatMembersRepository chatMembersRepository)
+            IChatMembersRepository chatMembersRepository,
+            IMessagesRepository messagesRepository)
         {
             _chatsRepository = chatsRepository;
             _usersRepository = usersRepository;
             _chatMembersRepository = chatMembersRepository;
+            _messagesRepository = messagesRepository;
         }
 
         public async Task<List<Message>> GetAllMessagesByChatId(Guid chatId)
@@ -29,7 +32,7 @@ namespace Chipis.Application.Services
             int take,
             Guid? cursorId)
         {
-            return await _chatsRepository.GetMessagesByChatId(chatId, take, cursorId);
+            return await _messagesRepository.GetMessagesByChatId(chatId, take, cursorId);
         }
 
         public async Task<List<Chat>> GetChatsByUser(Guid userId)
@@ -54,6 +57,13 @@ namespace Chipis.Application.Services
             });
 
             return chat;
+        }
+
+        public async Task<List<Message>> SearchMessages(Guid chatId, string text, bool? isSinglWord)
+        {
+            if(isSinglWord.HasValue && isSinglWord == true)
+                return await _messagesRepository.SearchMessagesAsSinglWord(chatId, text);
+            return await _messagesRepository.SearchMessages(chatId, text);
         }
     }
 }

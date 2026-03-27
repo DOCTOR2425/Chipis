@@ -82,6 +82,7 @@ namespace Chipis.DataAccess.Repositories
             List<UserEntity> usersEntity = await _context.UserEntity
                 .OrderBy(u => u.Nickname)
                 .Where(u => u.Nickname.Contains(nickname))
+                .AsNoTracking()
                 .ToListAsync();
 
             return usersEntity

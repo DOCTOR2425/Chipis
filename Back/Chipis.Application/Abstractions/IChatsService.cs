@@ -11,5 +11,6 @@ namespace Chipis.Application.Abstractions
             Guid? cursorId);
         Task<List<Chat>> GetChatsByUser(Guid userId);
         Task<Chat> CreateChat(Guid userId1, Guid userId2);
+        Task<List<Message>> SearchMessages(Guid chatId, string text, bool? isSinglWord);
     }
 }

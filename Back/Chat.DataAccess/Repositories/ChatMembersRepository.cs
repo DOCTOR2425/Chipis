@@ -56,6 +56,7 @@ namespace Chipis.DataAccess.Repositories
                 .Include(m => m.UserEntity)
                 .Include(m => m.ChatEntity)
                 .Where(m => m.ChatEntity.ChatEntityId == chatId)
+                .AsNoTracking()
                 .ToListAsync();
 
             return entities

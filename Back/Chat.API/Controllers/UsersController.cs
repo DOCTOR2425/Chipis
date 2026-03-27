@@ -3,7 +3,6 @@ using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace Chipis.API.Controllers
 {
@@ -30,10 +29,10 @@ namespace Chipis.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("searchUser/{userName}")]
-        public async Task<IActionResult> GetUser(string userName)
+        [HttpGet("searchUser/{nickname}")]
+        public async Task<ActionResult<List<UserResponse>>> SearchUser(string nickname)
         {
-            List<User> users = await _usersService.SearchUsersByNickname(userName);
+            List<User> users = await _usersService.SearchUsersByNickname(nickname);
 
             return Ok(users
                 .Select(u => new UserResponse(u.UserId, u.Nickname))
