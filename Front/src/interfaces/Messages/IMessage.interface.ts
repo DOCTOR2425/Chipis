@@ -10,4 +10,6 @@ export interface IMessage {
   sender?: IUser;
   chatId?: string;
   chat?: IChat;
+  status: 'sent' | 'delivered' | 'read'; // возможные статусы
+  isChanged: boolean
 }

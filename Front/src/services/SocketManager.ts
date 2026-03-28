@@ -9,7 +9,7 @@ class SocketManager {
     this.id = id;
 
     // URL C# бэкенда
-    const wsUrl = `ws://localhost:5048/ws?id=${id}`;
+    const wsUrl = `wss://localhost:7078/ws?id=${id}`;
     
     this.ws = new WebSocket(wsUrl);
 
@@ -31,24 +31,32 @@ class SocketManager {
     };
   }
 
-  sendMessage(message: IMessage) {
-  if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+  sendMessage(message: IMessage) 
+  {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
 
-    console.error('Нет соединения');
-    return false;
-  }
-
-  // Отправляем сообщение прямо как есть
-  this.ws.send(JSON.stringify(message));
-  console.log(' Отправлено:', message);
-  return true;
+      console.error('Нет соединения');
+      return false;
     }
 
-   disconnect() {
+    const request = {
+        ChatId: message.chatId,
+        SenderId: (message.sender) ? message.sender.userId : message.senderId,
+        Text: message.text
+    };
+
+    this.ws.send(JSON.stringify(request));
+    console.log(' Отправлено:', message);
+    return true;
+  }
+
+
+  disconnect() 
+  {
     this.ws?.close();
     this.ws = null;
   }
 
 }
 
-export const wsManager = new SocketManager();
+//export const wsManager = new SocketManager();

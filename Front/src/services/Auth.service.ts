@@ -53,10 +53,6 @@ class AuthService {
     }
   }
 
-
-    async refreshTest(): Promise<void> {
-    console.log(await api.get('/Users/testAuth'));
-  }
 }
 
 const authService = new AuthService();

@@ -2,13 +2,13 @@ import Message from '../Message/Message';
 import './Chat.scss';
 import { useEffect, useState } from 'react';
 import { IMessage } from '../../interfaces/Messages/IMessage.interface';
-import { wsManager } from '../../services/SocketManager';
 import avatarImage from '../../media/testImage/avatar1.jpg';
 import { useParams } from 'react-router-dom';
 import { chatService } from '../../services/Chat.service';
 import { IUser } from '../../interfaces/IUser.interface';
 import authService from '../../services/Auth.service';
 import { notFoundedUser } from '../../contexts/UserContext';
+import { wsManager } from '../../services/ChatHub';
 
 export default function Chat() {
   const { chatId } = useParams();
@@ -25,16 +25,17 @@ export default function Chat() {
     const fetchMessages = async () => {
       if (!chatId) return;
       try {
-        const data = await chatService.getMessagesFromChat(chatId);
-        setMessagesList(data.messages);
+        const messages = await chatService.getMessagesFromChat(chatId);
+        setMessagesList(messages);
       } catch (err) {
         console.error('Failed to load messages:', err);
       }
     };
 
+    console.log(messagesList);
     fetchMessages();
-    wsManager.connect(activeUser.userId);
-  }, [chatId, activeUser.userId]);
+    wsManager.connect();
+  }, [chatId]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -50,16 +51,15 @@ export default function Chat() {
       messageId: Date.now().toString(),
       text: inputText,
       sentAt: new Date().toISOString(),
-      chatId: chatId || '',
+      chatId: chatId,
       sender: activeUser,
+      senderId: activeUser.userId,
+      status: 'sent',
+      isChanged: false
     };
     setMessagesList([...messagesList, newMessage]);
-    wsManager.sendMessage(newMessage);
+    //wsManager.sendMessage(newMessage);
     setInputText('');
-  };
-
-  const handleHeaderClick = () => {
-    authService.refreshTest();
   };
 
   const searchingMessages = () => 
@@ -70,7 +70,7 @@ export default function Chat() {
   return (
     <div className="chat">
       <header className="chat__header">
-        <div className="chat__header-info" onClick={handleHeaderClick}>
+        <div className="chat__header-info">
           <div className="chat__avatar-wrapper">
             <img className="chat__avatar" src={avatarImage} alt="avatar" />
             <div className="chat__status chat__status--online"></div>

@@ -6,7 +6,7 @@ import { api } from "./ApiClient.service";
 class ChatService {
   async getChatsOfUser(): Promise<IChat[]> {
     try {
-      const response = await api.get<IChat[]>('/Chats/chast');
+      const response = await api.get<IChat[]>('/Chats/chats');
       return response; 
     } catch (error) {
       console.error('Request ChatsList error:', error);
@@ -18,7 +18,7 @@ class ChatService {
     chatId: string, 
     take: number = 50, 
     cursorId?: string
-  ): Promise<IMessagesResponse> {
+  ): Promise<IMessage[]> {
     try {
       const queryParams: string[] = [];
       queryParams.push(`take=${take}`);
@@ -28,7 +28,13 @@ class ChatService {
       
       const url = `/Chats/chats/${chatId}/messages${queryParams.length ? `?${queryParams.join('&')}` : ''}`;
       
-      const messages = await api.get<IMessagesResponse>(url);
+      const response = await api.get<IMessagesResponse>(url);
+
+      const messages: IMessage[] =  response.messages.map((msg: any) => ({
+           ...msg,
+          status: msg.isReaded ? 'read' : 'delivered'
+        }));
+
       return messages;
     } catch (error) {
       console.error('Request ChatsList error:', error);
