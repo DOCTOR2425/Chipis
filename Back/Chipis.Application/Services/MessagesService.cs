@@ -26,6 +26,8 @@ namespace Chipis.Application.Services
                 Guid.NewGuid(),
                 command.Text,
                 DateTime.Now,
+                false,
+                false,
                 await _chatsRepository.GetById(command.ChatId),
                 await _usersRepository.GetById(command.SenderId));
 

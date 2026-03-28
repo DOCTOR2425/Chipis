@@ -25,7 +25,7 @@ namespace Chipis.API.Controllers
             return Ok(await _chatsService.GetAllMessagesByChatId(chatId));
         }
 
-        [HttpGet("chats/{chatId:guid}/messages")]//TODO chat
+        [HttpGet("chat/{chatId:guid}/messages")]
         public async Task<ActionResult<List<MessageResponse>>> GetMessagesFromChat(
             [FromRoute] Guid chatId,
             [FromQuery] int take,
@@ -39,7 +39,9 @@ namespace Chipis.API.Controllers
                     m.MessageId,
                     m.Sender.UserId,
                     m.Text,
-                    m.SentAt))
+                    m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded))
                 .ToList();
 
             bool hasMore = responses.Count > take;
@@ -54,7 +56,7 @@ namespace Chipis.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("chast")]// TODO chast
+        [HttpGet("chats")]
         public async Task<IActionResult> GetUserChats()
         {
             Guid userId = Guid.Parse(User
@@ -102,7 +104,9 @@ namespace Chipis.API.Controllers
                     m.MessageId,
                     m.Sender.UserId,
                     m.Text,
-                    m.SentAt))
+                    m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded))
                 .ToList());
         }
     }

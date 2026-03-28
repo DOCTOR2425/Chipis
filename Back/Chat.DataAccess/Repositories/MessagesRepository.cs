@@ -73,7 +73,7 @@ namespace Chipis.DataAccess.Repositories
             }
 
             List<MessageEntity> messageEntities = await query
-                .OrderByDescending(m => m.SentAt)
+                .OrderBy(m => m.SentAt)
                 .Take(take)
                 .ToListAsync();
 
@@ -82,6 +82,8 @@ namespace Chipis.DataAccess.Repositories
                     m.MessageEntityId,
                     m.Text,
                     m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
@@ -102,6 +104,8 @@ namespace Chipis.DataAccess.Repositories
                     m.MessageEntityId,
                     m.Text,
                     m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
@@ -125,6 +129,8 @@ namespace Chipis.DataAccess.Repositories
                     m.MessageEntityId,
                     m.Text,
                     m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();

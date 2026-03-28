@@ -1,5 +1,5 @@
 ﻿using Chipis.API.Filters;
-using Chipis.API.WebSockets;
+using Chipis.API.Hubs;
 using Chipis.Application.Abstractions;
 using Chipis.Application.Services;
 using Chipis.DataAccess;
@@ -53,6 +53,8 @@ namespace Chipis.API
 
             builder.Services.AddDbContext<ChipisDbContext>();
 
+            builder.Services.AddSignalR();
+
             RegisterServices(builder);
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -70,8 +72,6 @@ namespace Chipis.API
                 });
 
             builder.Services.AddAuthorization();
-
-            builder.Services.AddTransient<ChatWebSocketHandler>();
 
             var app = builder.Build();
 
@@ -104,13 +104,7 @@ namespace Chipis.API
 
             app.MapControllers();
 
-
-            app.UseWebSockets();
-
-            app.Map("/ws", async (HttpContext ctx, ChatWebSocketHandler handler) =>
-            {
-                await handler.HandleAsync(ctx);
-            });
+            app.MapHub<ChatHub>("/chat");
 
             app.Run();
         }

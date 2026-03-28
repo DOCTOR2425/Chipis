@@ -41,6 +41,8 @@ namespace Chipis.DataAccess.Repositories
                     m.MessageEntityId,
                     m.Text,
                     m.SentAt,
+                    m.IsChanged,
+                    m.IsReaded,
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
