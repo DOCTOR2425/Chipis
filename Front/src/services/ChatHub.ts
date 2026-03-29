@@ -2,12 +2,16 @@ import * as  signalR from "@microsoft/signalr"
 
 class ChatHub {
   private connection: signalR.HubConnection | null = null;
+  private BASE_URL = 'https://localhost:7078';
 
   async connect(chatId: string | undefined) {
-    const BASE_URL = 'https://localhost:7078';
+    if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
+      console.warn("SignalR уже подключён, пропускаю connect()");
+      return;
+    }
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${BASE_URL}/chat`, {
+      .withUrl(`${this.BASE_URL}/chat`, {
         accessTokenFactory: () => localStorage.getItem("accessToken") || ""
       })
       .withAutomaticReconnect()
@@ -34,8 +38,6 @@ class ChatHub {
     }
   }
 
-
-
   async sendMessage(text: string, chatId: string | undefined) {
     if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
       console.error("Нет подключения к SignalR");
@@ -51,6 +53,19 @@ class ChatHub {
       console.error("Ошибка отправки сообщения:", err);
     }
   }
+
+  async disconnect() {
+    if (this.connection) {
+      console.log("Отключаю SignalR");
+      try {
+        await this.connection.stop();
+      } catch (e) {
+        console.warn("Ошибка при остановке соединения:", e);
+      }
+      this.connection = null;
+    }
+  }
+
 }
 
 export const wsManager = new ChatHub();

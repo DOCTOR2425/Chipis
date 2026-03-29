@@ -22,8 +22,9 @@ export default function Chat() {
   const activeUser: IUser = activeUserStr ? JSON.parse(activeUserStr) : notFoundedUser;
 
   useEffect(() => {
+    if (!chatId) return;
+
     const fetchMessages = async () => {
-      if (!chatId) return;
       try {
         const messages = await chatService.getMessagesFromChat(chatId);
         setMessagesList(messages);
@@ -32,10 +33,20 @@ export default function Chat() {
       }
     };
 
-    console.log(messagesList);
     fetchMessages();
-    wsManager.connect(chatId);
   }, [chatId]);
+
+  useEffect(() => {
+    if (!chatId) return;
+
+    wsManager.connect(chatId);
+
+    return () => {
+      wsManager.disconnect();
+    };
+  }, [chatId]);
+
+
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -62,8 +73,7 @@ export default function Chat() {
     setInputText('');
   };
 
-  const searchingMessages = () => 
-  {
+  const searchingMessages = () => {
     chatService.searchMessages(inputSearchText);
   }
 

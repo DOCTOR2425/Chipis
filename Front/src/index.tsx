@@ -11,18 +11,18 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
     <title>Fropis</title>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/auth" replace />} />
-        <Route path="/chat" element={<App />}>
-          <Route path=":chatId" element={<Chat />} /> {/* Конкретный чат */}
-        </Route>
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
-    </BrowserRouter>
-  </React.StrictMode>
+    <Routes>
+      <Route path="/" element={<Navigate to="/auth" replace />} />
+      <Route path="/chat" element={<App />}>
+        <Route path=":chatId" element={<Chat />} /> {/* Конкретный чат */}
+      </Route>
+      <Route path="/auth" element={<Auth />} />
+    </Routes>
+  </BrowserRouter>
+  // </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

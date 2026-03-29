@@ -18,6 +18,7 @@ namespace Chipis.API.Hubs
 
         public async Task JoinChat(Guid chatId)
         {
+            Console.WriteLine($"[HUB] {Context.ConnectionId} вошёл в чат {chatId}");
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
         }
 
