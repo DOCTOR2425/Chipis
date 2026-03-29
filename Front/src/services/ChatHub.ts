@@ -1,6 +1,3 @@
-import { sendMessage } from "@microsoft/signalr/dist/esm/Utils";
-import Message from "../components/Message/Message";
-import { IMessage } from "../interfaces/Messages/IMessage.interface";
 import * as  signalR from "@microsoft/signalr"
 
 class ChatHub {
@@ -11,7 +8,7 @@ class ChatHub {
 
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${BASE_URL}/chat`, {
-        accessTokenFactory: () => localStorage.getItem("accessToken")!
+        accessTokenFactory: () => localStorage.getItem("accessToken") || ""
       })
       .withAutomaticReconnect()
       .build();
@@ -20,21 +17,31 @@ class ChatHub {
       console.log("Получено:", message);
     });
 
+    this.connection.onreconnected(async () => {
+      console.log("Соединение установлено или восстановлено");
+
+      if (chatId) {
+        await this.connection!.invoke("JoinChat", chatId);
+        console.log("Подключено к чату:", chatId);
+      }
+    });
+
     try {
       await this.connection.start();
-      await this.connection.invoke("JoinChat", chatId);
-      console.log("Подключено к чату:", chatId);
+      console.log("SignalR стартовал, ждём onreconnected...");
     } catch (err) {
       console.error("Ошибка подключения:", err);
     }
   }
+
+
 
   async sendMessage(text: string, chatId: string | undefined) {
     if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
       console.error("Нет подключения к SignalR");
       return;
     }
-    
+
     try {
       await this.connection.invoke("SendMessage", {
         chatId,
