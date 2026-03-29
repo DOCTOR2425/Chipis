@@ -26,7 +26,7 @@ class ChatService {
         queryParams.push(`cursorId=${cursorId}`);
       }
       
-      const url = `/Chats/chats/${chatId}/messages${queryParams.length ? `?${queryParams.join('&')}` : ''}`;
+      const url = `/Chats/chat/${chatId}/messages${queryParams.length ? `?${queryParams.join('&')}` : ''}`;
       
       const response = await api.get<IMessagesResponse>(url);
 

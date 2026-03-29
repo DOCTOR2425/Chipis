@@ -1,6 +1,5 @@
 ﻿using Chipis.API.DTOs;
 using Chipis.Application.Abstractions;
-using Chipis.Application.DTOs;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 
@@ -20,9 +19,14 @@ namespace Chipis.API.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
         }
 
-        public async Task SendMessage(CreateMessageCommand command)
+        public async Task SendMessage(CreateMessageRequest command)
         {
-            Message saved = await _messagesService.SaveNewMessage(command);
+            Guid senderId = Guid.Parse(Context.UserIdentifier);
+
+            Message saved = await _messagesService.SaveNewMessage(
+                command.Text, 
+                command.ChatId,
+                senderId);
 
             MessageResponse outgoing = new MessageResponse(
                 saved.MessageId,
@@ -32,7 +36,6 @@ namespace Chipis.API.Hubs
                 false,
                 false);
 
-            // Рассылка всем в комнате
             await Clients.Group(saved.Chat.ChatId.ToString())
                 .SendAsync("ReceiveMessage", outgoing);
         }

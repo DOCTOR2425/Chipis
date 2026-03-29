@@ -1,35 +1,47 @@
+import { sendMessage } from "@microsoft/signalr/dist/esm/Utils";
 import Message from "../components/Message/Message";
 import { IMessage } from "../interfaces/Messages/IMessage.interface";
 import * as  signalR from "@microsoft/signalr"
 
-class ChatHub{
-    
-  
-    async connect() 
-    {
+class ChatHub {
+  private connection: signalR.HubConnection | null = null;
 
-      const BASE_URL = 'https://localhost:7078/api';
+  async connect(chatId: string | undefined) {
+    const BASE_URL = 'https://localhost:7078/api';
 
-      var connection = new signalR.HubConnectionBuilder()
+    this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${BASE_URL}/chat`)
       .withAutomaticReconnect()
-      .build()
-    
-      connection.on("RecieveMessage", (message) => {
-        console.log(message)
-      })
-      try{
+      .build();
 
-        await connection.start();
-        await connection.invoke("OpenChat");
+    this.connection.on("ReceiveMessage", (message) => {
+      console.log("Получено:", message);
+    });
 
-      }
-      catch(err)
-      {
-        console.log("Ошибка подключения" + err);
-      }
-    };
+    try {
+      await this.connection.start();
+      await this.connection.invoke("JoinChat", chatId);
+      console.log("Подключено к чату:", chatId);
+    } catch (err) {
+      console.error("Ошибка подключения:", err);
+    }
   }
 
+  async sendMessage(text: string, chatId: string | undefined) {
+    if (!this.connection || this.connection.state !== signalR.HubConnectionState.Connected) {
+      console.error("Нет подключения к SignalR");
+      return;
+    }
+
+    try {
+      await this.connection.invoke("SendMessage", {
+        chatId,
+        text
+      });
+    } catch (err) {
+      console.error("Ошибка отправки сообщения:", err);
+    }
+  }
+}
 
 export const wsManager = new ChatHub();

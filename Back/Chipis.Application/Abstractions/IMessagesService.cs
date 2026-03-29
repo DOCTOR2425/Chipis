@@ -1,11 +1,10 @@
-﻿using Chipis.Application.DTOs;
-using Chipis.Core.Models;
+﻿using Chipis.Core.Models;
 
 namespace Chipis.Application.Abstractions
 {
     public interface IMessagesService
     {
-        Task<Message> SaveNewMessage(CreateMessageCommand command);
+        Task<Message> SaveNewMessage(string text, Guid chatId, Guid senderId);
         Task<Guid> DeleteMessage(Guid messageId);
     }
 }

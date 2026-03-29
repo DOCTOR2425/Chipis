@@ -104,7 +104,7 @@ namespace Chipis.API
 
             app.MapControllers();
 
-            app.MapHub<ChatHub>("/chat");
+            app.MapHub<ChatHub>("/api/chat");
 
             app.Run();
         }

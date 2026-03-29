@@ -1,5 +1,4 @@
-﻿using Chipis.Application.DTOs;
-using Chipis.Application.Abstractions;
+﻿using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 
 namespace Chipis.Application.Services
@@ -20,16 +19,16 @@ namespace Chipis.Application.Services
             _chatsRepository = chatsRepository;
         }
 
-        public async Task<Message> SaveNewMessage(CreateMessageCommand command)
+        public async Task<Message> SaveNewMessage(string text, Guid chatId, Guid senderId)
         {
             Message message = new Message(
                 Guid.NewGuid(),
-                command.Text,
+                text,
                 DateTime.Now,
                 false,
                 false,
-                await _chatsRepository.GetById(command.ChatId),
-                await _usersRepository.GetById(command.SenderId));
+                await _chatsRepository.GetById(chatId),
+                await _usersRepository.GetById(senderId));
 
             await _messagesRepository.Create(message);
             return message;

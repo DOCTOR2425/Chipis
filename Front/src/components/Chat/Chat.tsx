@@ -34,7 +34,7 @@ export default function Chat() {
 
     console.log(messagesList);
     fetchMessages();
-    wsManager.connect();
+    wsManager.connect(chatId);
   }, [chatId]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -58,7 +58,7 @@ export default function Chat() {
       isChanged: false
     };
     setMessagesList([...messagesList, newMessage]);
-    //wsManager.sendMessage(newMessage);
+    wsManager.sendMessage(inputText, chatId);
     setInputText('');
   };
 
