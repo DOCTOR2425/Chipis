@@ -6,6 +6,7 @@ using Chipis.DataAccess.Repositories;
 using Chipis.Infrastructure;
 using Chipis.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
@@ -68,6 +69,24 @@ namespace Chipis.API
                         IssuerSigningKey = new SymmetricSecurityKey(
                             Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                     };
+
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // Если это запрос к хабу — используем токен из query
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) &&
+                                path.StartsWithSegments("/chat"))
+                            {
+                                context.Token = accessToken;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             builder.Services.AddAuthorization();
@@ -103,7 +122,7 @@ namespace Chipis.API
 
             app.MapControllers();
 
-            app.MapHub<ChatHub>("/api/chat");
+            app.MapHub<ChatHub>("/chat");
 
             app.Run();
         }
