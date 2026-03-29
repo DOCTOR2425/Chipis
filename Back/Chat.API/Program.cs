@@ -1,5 +1,4 @@
 ﻿using Chipis.API.Filters;
-using Chipis.API.Hubs;
 using Chipis.Application.Abstractions;
 using Chipis.Application.Services;
 using Chipis.DataAccess;

@@ -4,7 +4,7 @@ import "./Message.scss";
 import { IUser } from "../../interfaces/IUser.interface";
 import { notFoundedUser } from "../../contexts/UserContext";
 
-const Message: FC<IMessage> = ({ messageId, text, senderId, sentAt, status = 'delivered', isChanged= false}) => {
+const Message: FC<IMessage> = ({ messageId, text, senderId, sentAt, status = 'error', isChanged= false}) => {
   const activeUserStr = localStorage.getItem('activeUser');
   const activeUser: IUser = activeUserStr ? JSON.parse(activeUserStr) : notFoundedUser;
 
@@ -16,8 +16,10 @@ const Message: FC<IMessage> = ({ messageId, text, senderId, sentAt, status = 'de
             return <span>✉️</span>;
         case 'read':
             return <span>🧾</span>;
+        case 'error':
+            return <span>⛔</span>;
         default:
-            return <span>✉️</span>;
+            return <span>⛔</span>;
     }
   };
 
