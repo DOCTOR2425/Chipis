@@ -3,8 +3,6 @@ using Chipis.Application.Abstractions;
 using Chipis.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using System;
-using System.Threading.Tasks;
 
 namespace Chipis.API.Hubs
 {

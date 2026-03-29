@@ -1,4 +1,5 @@
 ﻿using Chipis.API.Filters;
+using Chipis.API.Hubs;
 using Chipis.Application.Abstractions;
 using Chipis.Application.Services;
 using Chipis.DataAccess;
@@ -6,7 +7,6 @@ using Chipis.DataAccess.Repositories;
 using Chipis.Infrastructure;
 using Chipis.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
