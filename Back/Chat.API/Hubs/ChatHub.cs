@@ -6,8 +6,14 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Chipis.API.Hubs
 {
+    public interface IChatClient
+    {
+        public Task ReceiveMessage(MessageResponse outgoing);
+        public Task OnIncomingChat(string incom);
+    }
+
     [Authorize]
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatClient>
     {
         private readonly IMessagesService _messagesService;
 
@@ -20,6 +26,8 @@ namespace Chipis.API.Hubs
         {
             Console.WriteLine($"[HUB] {Context.ConnectionId} вошёл в чат {chatId}");
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString());
+            await Clients.Group(chatId.ToString())
+                .OnIncomingChat($"[HUB] {Context.ConnectionId} вошёл в чат {chatId}");
         }
 
         public async Task SendMessage(CreateMessageRequest command)
@@ -39,8 +47,7 @@ namespace Chipis.API.Hubs
                 false,
                 false);
 
-            await Clients.Group(saved.Chat.ChatId.ToString())
-                .SendAsync("ReceiveMessage", outgoing);
+            await Clients.Group(saved.Chat.ChatId.ToString()).ReceiveMessage(outgoing);
         }
     }
 }

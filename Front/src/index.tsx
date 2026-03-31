@@ -12,16 +12,16 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
-  <BrowserRouter>
-    <title>Fropis</title>
-    <Routes>
-      <Route path="/" element={<Navigate to="/auth" replace />} />
-      <Route path="/chat" element={<App />}>
-        <Route path=":chatId" element={<Chat />} /> {/* Конкретный чат */}
-      </Route>
-      <Route path="/auth" element={<Auth />} />
-    </Routes>
-  </BrowserRouter>
+    <BrowserRouter>
+      <title>Fropis</title>
+      <Routes>
+        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/chat" element={<App />}>
+          <Route path=":chatId" element={<Chat />} /> {/* Конкретный чат */}
+        </Route>
+        <Route path="/auth" element={<Auth />} />
+      </Routes>
+    </BrowserRouter>
   // </React.StrictMode>
 );
 

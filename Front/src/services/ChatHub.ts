@@ -4,12 +4,8 @@ class ChatHub {
   private connection: signalR.HubConnection | null = null;
   private BASE_URL = 'https://localhost:7078';
 
-  async connect(chatId: string | undefined) {
-    if (this.connection && this.connection.state !== signalR.HubConnectionState.Disconnected) {
-      console.warn("SignalR уже подключён, пропускаю connect()");
-      return;
-    }
 
+  async connect(chatId: string | undefined) {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${this.BASE_URL}/chat`, {
         accessTokenFactory: () => localStorage.getItem("accessToken") || ""
@@ -17,22 +13,18 @@ class ChatHub {
       .withAutomaticReconnect()
       .build();
 
-    this.connection.on("ReceiveMessage", (message) => {
-      console.log("Получено:", message);
-    });
+    this.connection.on("ReceiveMessage", (message => {
+      console.log(message);
+    }));
 
-    this.connection.onreconnected(async () => {
-      console.log("Соединение установлено или восстановлено");
-
-      if (chatId) {
-        await this.connection!.invoke("JoinChat", chatId);
-        console.log("Подключено к чату:", chatId);
-      }
-    });
+    this.connection.on("OnIncomingChat", (message => {
+      console.log(message);
+    }));
 
     try {
       await this.connection.start();
-      console.log("SignalR стартовал, ждём onreconnected...");
+      await this.connection.invoke("JoinChat", chatId);
+      console.log(this.connection);
     } catch (err) {
       console.error("Ошибка подключения:", err);
     }
@@ -65,7 +57,6 @@ class ChatHub {
       this.connection = null;
     }
   }
-
 }
 
 export const wsManager = new ChatHub();

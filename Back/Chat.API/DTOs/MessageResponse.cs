@@ -9,7 +9,7 @@
             Text = text;
             SentAt = sentAt;
             IsChanged = isChanged;
-            IsReaded = isReaded;
+            Status = isReaded;
         }
 
         public Guid MessageId { get; set; }
@@ -17,6 +17,6 @@
         public string Text { get; set; } = string.Empty;
         public DateTime SentAt { get; set; }
         public bool IsChanged { get; set; }
-        public bool IsReaded { get; set; }
+        public bool Status { get; set; }
     }
 }
