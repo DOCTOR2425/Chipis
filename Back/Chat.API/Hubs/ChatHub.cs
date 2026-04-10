@@ -49,5 +49,10 @@ namespace Chipis.API.Hubs
 
             await Clients.Group(saved.Chat.ChatId.ToString()).ReceiveMessage(outgoing);
         }
+
+        public async Task MarkMessageAsRead(Guid messageId)
+        {
+            await _messagesService.MarkMessageAsRead(messageId);
+        }
     }
 }

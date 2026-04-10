@@ -6,5 +6,6 @@ namespace Chipis.Application.Abstractions
     {
         Task<Message> SaveNewMessage(string text, Guid chatId, Guid senderId);
         Task<Guid> DeleteMessage(Guid messageId);
+        Task<Guid> MarkMessageAsRead(Guid messageId);
     }
 }

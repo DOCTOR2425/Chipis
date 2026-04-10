@@ -12,5 +12,6 @@ namespace Chipis.Application.Abstractions
             Guid? cursorId);
         Task<List<Message>> SearchMessages(Guid chatId, string text);
         Task<List<Message>> SearchMessagesAsSinglWord(Guid chatId, string text);
+        Task<Guid> MarkMessageAsRead(Guid messageId);
     }
 }

@@ -38,5 +38,10 @@ namespace Chipis.Application.Services
         {
             return await _messagesRepository.Delete(messageId);
         }
+
+        public async Task<Guid> MarkMessageAsRead(Guid messageId)
+        {
+            return await _messagesRepository.MarkMessageAsRead(messageId);
+        }
     }
 }

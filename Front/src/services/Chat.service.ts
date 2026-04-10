@@ -7,7 +7,7 @@ class ChatService {
   async getChatsOfUser(): Promise<IChat[]> {
     try {
       const response = await api.get<IChat[]>('/Chats/chats');
-      return response; 
+      return response;
     } catch (error) {
       console.error('Request ChatsList error:', error);
       throw error;
@@ -15,8 +15,8 @@ class ChatService {
   }
 
   async getMessagesFromChat(
-    chatId: string, 
-    take: number = 50, 
+    chatId: string,
+    take: number = 50,
     cursorId?: string
   ): Promise<IMessage[]> {
     try {
@@ -25,15 +25,15 @@ class ChatService {
       if (cursorId) {
         queryParams.push(`cursorId=${cursorId}`);
       }
-      
+
       const url = `/Chats/chat/${chatId}/messages${queryParams.length ? `?${queryParams.join('&')}` : ''}`;
-      
+
       const response = await api.get<IMessagesResponse>(url);
 
-      const messages: IMessage[] =  response.messages.map((msg: any) => ({
-           ...msg,
-          status: msg.isReaded ? 'read' : 'delivered'
-        }));
+      const messages: IMessage[] = response.messages.map((msg: any) => ({
+        ...msg,
+        status: msg.isReaded ? 'read' : 'delivered'
+      }));
 
       return messages;
     } catch (error) {
@@ -43,11 +43,14 @@ class ChatService {
   }
 
 
-  async searchMessages(text: string): Promise<IMessagesResponse> {
+  async searchMessages(
+    chatId: string | undefined,
+    text: string
+  ): Promise<IMessagesResponse> {
     try {
-    const queryParams: string = text;
-      const url = `/Chats/chats/search${queryParams}`;
-      
+      const queryParams: string = text;
+      const url = `/Chats/chat/${chatId}/search/${queryParams}`;
+
       const messages = await api.get<IMessagesResponse>(url);
       return messages;
     } catch (error) {
@@ -55,7 +58,7 @@ class ChatService {
       throw error;
     }
   }
-  
+
 }
 
 export const chatService = new ChatService(); 

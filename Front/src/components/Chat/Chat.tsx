@@ -74,7 +74,7 @@ export default function Chat() {
   };
 
   const searchingMessages = () => {
-    chatService.searchMessages(inputSearchText);
+    console.log(chatService.searchMessages(chatId, inputSearchText));
   }
 
   return (

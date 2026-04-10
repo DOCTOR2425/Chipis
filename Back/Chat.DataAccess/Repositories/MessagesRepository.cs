@@ -43,6 +43,7 @@ namespace Chipis.DataAccess.Repositories
         public async Task<Guid> Change(Guid messageId, string text)
         {
             await _context.MessageEntity
+                .Where(m => m.MessageEntityId == messageId)
                 .ExecuteUpdateAsync(m => m
                 .SetProperty(e => e.IsChanged, true)
                 .SetProperty(e => e.Text, text));
@@ -94,8 +95,8 @@ namespace Chipis.DataAccess.Repositories
             List<MessageEntity> entities = await _context.MessageEntity
                 .Include(m => m.ChatEntity)
                 .Include(m => m.Sender)
-                .Where(m => 
-                    m.Text.Contains(text) && 
+                .Where(m =>
+                    m.Text.Contains(text) &&
                     m.ChatEntity.ChatEntityId == chatId)
                 .ToListAsync();
 
@@ -134,6 +135,16 @@ namespace Chipis.DataAccess.Repositories
                     new Chat(m.ChatEntity.ChatEntityId, m.ChatEntity.Name),
                     new User(m.Sender.UserEntityId, m.Sender.Nickname, m.Sender.Telephone, m.Sender.HashPassword)))
                 .ToList();
+        }
+
+        public async Task<Guid> MarkMessageAsRead(Guid messageId)
+        {
+            await _context.MessageEntity
+                .Where(m => m.MessageEntityId == messageId)
+                .ExecuteUpdateAsync(m => m
+                .SetProperty(e => e.IsReaded, true));
+
+            return messageId;
         }
     }
 }
