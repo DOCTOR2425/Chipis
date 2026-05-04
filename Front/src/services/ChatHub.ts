@@ -4,6 +4,11 @@ class ChatHub {
   private connection: signalR.HubConnection | null = null;
   private BASE_URL = 'https://localhost:7078';
 
+  private onMessageReceived: ((msg: any) => void) | null = null;
+
+  setOnMessageReceived(callback: (msg: any) => void) {
+    this.onMessageReceived = callback;
+  }
 
   async connect(chatId: string | undefined) {
     this.connection = new signalR.HubConnectionBuilder()
@@ -17,8 +22,8 @@ class ChatHub {
       console.log(message);
     }));
 
-    this.connection.on("OnIncomingChat", (message => {
-      console.log(message);
+    this.connection.on("OnIncomingChat", (status => {
+      console.log(status);
     }));
 
     try {

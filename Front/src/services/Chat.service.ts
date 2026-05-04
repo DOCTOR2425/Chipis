@@ -42,7 +42,6 @@ class ChatService {
     }
   }
 
-
   async searchMessages(
     chatId: string | undefined,
     text: string

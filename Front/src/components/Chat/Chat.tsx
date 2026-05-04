@@ -6,7 +6,6 @@ import avatarImage from '../../media/testImage/avatar1.jpg';
 import { useParams } from 'react-router-dom';
 import { chatService } from '../../services/Chat.service';
 import { IUser } from '../../interfaces/IUser.interface';
-import authService from '../../services/Auth.service';
 import { notFoundedUser } from '../../contexts/UserContext';
 import { wsManager } from '../../services/ChatHub';
 
