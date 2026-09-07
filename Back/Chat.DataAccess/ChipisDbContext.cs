@@ -7,7 +7,7 @@ namespace Chipis.DataAccess
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@$"Server=DESKTOP-ORIF3H0;Database=ChipisDB;
+            optionsBuilder.UseSqlServer(@$"Server=WIN-R958PCI8J9S;Database=ChipisDB;
 				Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True;");
             //.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
         }
